@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h1 class="text-center mt-4 view-title">DETALLE DE PRODUCTO:</h1>
+      <hr class="hr-divider" />
+
+      <div class="card mt-4">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <h4 class="detailCart text-center">
+              <div class="fw-bold">Título: {{getProductById.title}}</div>
+              <div class="fw-bold">Descripción:
+                {{getProductById.description}}</div>
+              <div class="fw-bold">ID: {{getProductById._id}}</div>
+              <div class="text-success">${{getProductById.price}}</div>
+            </h4>
+          </li>
+        </ul>
+        <div class="text-center mt-3">
+          <button
+            id="btnAddToCart"
+            data-product-id="{{getProductById._id}}"
+            class="btn btn-success"
+          >Agregar al Carrito</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/toastify-js"
+></script>
+<script src="/js/viewDetailProduct.js"></script>

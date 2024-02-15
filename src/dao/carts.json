@@ -1,0 +1,82 @@
+[{
+  "_id": {
+    "$oid": "6574f74fb9a93ceb05f895fb"
+  },
+  "title": "TITULO MODIFICADO",
+  "products": [],
+  "status": true
+},
+{
+  "_id": {
+    "$oid": "657652f1fd69e3f5f2d60663"
+  },
+  "title": "Carrito Hardcode para test",
+  "status": true,
+  "products": [
+    {
+      "product": {
+        "$oid": "6574898c4ba22b2e935dfbb4"
+      },
+      "quantity": 1,
+      "_id": {
+        "$oid": "65772b4abd62ec358b5a3e62"
+      }
+    },
+    {
+      "product": {
+        "$oid": "6574898c4ba22b2e935dfbb5"
+      },
+      "quantity": 1,
+      "_id": {
+        "$oid": "65772b4abd62ec358b5a3e6b"
+      }
+    },
+    {
+      "product": {
+        "$oid": "6574898c4ba22b2e935dfbaf"
+      },
+      "quantity": 1,
+      "_id": {
+        "$oid": "65772b4bbd62ec358b5a3e77"
+      }
+    },
+    {
+      "product": {
+        "$oid": "6574898c4ba22b2e935dfbae"
+      },
+      "quantity": 1,
+      "_id": {
+        "$oid": "65772b4cbd62ec358b5a3e86"
+      }
+    },
+    {
+      "product": {
+        "$oid": "6574898c4ba22b2e935dfbb3"
+      },
+      "quantity": 3,
+      "_id": {
+        "$oid": "65772b4dbd62ec358b5a3e99"
+      }
+    }
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "657727791341df7d70a38d95"
+  },
+  "title": "UPDATE",
+  "products": [
+    {
+      "product": {
+        "$oid": "6574898c4ba22b2e935dfbb9"
+      },
+      "quantity": 6,
+      "_id": {
+        "$oid": "65772b13bd62ec358b5a3e4f"
+      }
+    }
+  ],
+  "status": true,
+  "__v": 0
+}]
