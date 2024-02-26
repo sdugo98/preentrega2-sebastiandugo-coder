@@ -5,6 +5,7 @@ import multer from "multer";
 import mongoose from "mongoose";
 import { io } from "../app.js";
 import { managerProducts } from "./products-router.js";
+import { auth } from "./viewsRouter.js";
 export const router = Router();
 const managerCarts = new ManagerCarts();
 const upload = multer();
@@ -17,7 +18,7 @@ function idValid(id, res) {
   }
 }
 
-router.get("/", async (req, res) => {
+router.get("/", auth,async (req, res) => {
   try {
     let carts = await managerCarts.getCarts();
     if (carts.length <= 0) {
@@ -38,7 +39,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", auth,async (req, res) => {
   try {
     let { id } = req.params;
     let valid = idValid(id, res);
@@ -60,7 +61,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/:cid/product/:pid", async (req, res) => {
+router.post("/:cid/product/:pid", auth,async (req, res) => {
   try {
     let { cid } = req.params;
     let valid = idValid(cid, res);
@@ -92,7 +93,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
   }
 });
 
-router.post("/", upload.none(), async (req, res) => {
+router.post("/", auth,upload.none(), async (req, res) => {
   try {
     let { title } = req.body;
     if (!title) {
@@ -119,7 +120,7 @@ router.post("/", upload.none(), async (req, res) => {
 });
 
 
-router.delete("/:cid/product/:pid", async (req, res) => {
+router.delete("/:cid/product/:pid", auth,async (req, res) => {
   try {
     let { cid } = req.params;
     let valid = idValid(cid, res);
@@ -152,7 +153,7 @@ router.delete("/:cid/product/:pid", async (req, res) => {
 });
 
 
-router.delete("/:cid", async (req, res) => {
+router.delete("/:cid", auth,async (req, res) => {
   try {
     let { cid } = req.params;
     let valid = idValid(cid, res);
@@ -176,7 +177,7 @@ router.delete("/:cid", async (req, res) => {
 
 
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth,async (req, res) => {
   try {
     let { id } = req.params;
     let valid = idValid(id);
@@ -203,7 +204,7 @@ router.put("/:id", async (req, res) => {
 });
 
 
-router.put("/:cid/product/:pid", async (req, res) => {
+router.put("/:cid/product/:pid", auth,async (req, res) => {
   try {
     let { cid } = req.params;
     let valid = idValid(cid, res);

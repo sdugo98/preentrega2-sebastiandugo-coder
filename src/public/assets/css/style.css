@@ -107,3 +107,11 @@ body {
     margin-bottom: 30px;
   }
   
+  /* manejo errores */
+  .errorRegister{
+    color: red;
+  }
+
+  .userSucess{
+    color: #28a745;
+  }

@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="display-4 text-center mt-4 text-dark">LOGIN</h1>
+            <hr class="hr-divider">
+
+            <form action="/api/sessions/login" method="post">
+                {{#if error}}
+                    <div class="alert alert-danger">
+                        {{error}}
+                    </div>
+                {{/if}}
+                {{#if message}}
+                    <div class="alert alert-success">
+                        {{message}}
+                    </div>
+                {{/if}}
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Coloque su Email:</label>
+                    <input type="text" class="form-control" id="email" name="email">
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña:</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container text-center mt-4">
+    <h2 class="text-muted">Dirigirse a:</h2> <!-- Cambié el color a gris oscuro -->
+    <a href="/" class="btn btn-secondary btn-lg mr-2">Home</a>
+    <a href="/login" class="btn btn-secondary btn-lg mr-2">Login</a>
+    <a href="/register" class="btn btn-secondary btn-lg mr-2">Registro</a>
+    <a href="/perfil" class="btn btn-secondary btn-lg">Perfil</a>
+    <a href="api/sessions/logout" class="btn btn-secondary btn-lg">Logout</a>
+</div>

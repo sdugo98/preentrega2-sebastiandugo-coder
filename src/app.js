@@ -5,9 +5,11 @@ import { Server } from "socket.io";
 import { router as productManagerRouter } from "./router/products-router.js";
 import { router as cartManagerRouter } from "./router/carts-router.js";
 import { router as chatManagerRouter } from "./router/chat-router.js";
+import { router as sessionsManagerRouter } from "./router/sessions-router.js";
 import { __dirname } from "./utils.js";
 import { chatManager } from "./dao/managerMongo/chatManager.js";
-
+import sessions from 'express-session'
+import mongoStore from 'connect-mongo'
 import mongoose from "mongoose";
 
 const PORT = 8080;
@@ -19,6 +21,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`));
 
 /* CONFIGURAMOS HANDLEBARS */
+
+/* Configuracion sessions y connect mongo */
+app.use(sessions({
+  secret: 'udmv',
+  resave: true, saveUninitialized: true,
+  store: mongoStore.create({
+    mongoUrl: "mongodb+srv://sebastiandugo98:sebas1998@cluster0.xbb2pbe.mongodb.net/?retryWrites=true&w=majority",
+    mongoOptions:{dbName:'test'},
+    ttl:3600
+  })
+})) 
+
 
 /* Trabajar con doc Hidratados */
 app.engine(
@@ -39,6 +53,7 @@ app.set("views", `${__dirname}/views`);
 app.use("/api/chat", chatManagerRouter);
 app.use("/api/products", productManagerRouter);
 app.use("/api/carts", cartManagerRouter);
+app.use("/api/sessions", sessionsManagerRouter)
 app.use("/", viewsRouter);
 
 const serverHTTP = app.listen(PORT, () => {

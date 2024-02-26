@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="display-4 text-center mt-4 ">REGISTRO</h1>
+            <hr class="hr-divider">
+
+            <form action="/api/sessions/register" method="post">
+                {{#if error}}
+                    <div class="alert alert-danger">
+                        {{error}}
+                    </div>
+                {{/if}}
+
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Ingrese su nombre:</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre">
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Coloque su Email:</label>
+                    <input type="email" class="form-control" id="email" name="email">
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña:</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container text-center">
+  <h2>Dirigirse a:</h2>
+  <a href="/" class="btn btn-secondary mr-2">Home</a>
+  <a href="/login" class="btn btn-secondary mr-2">Login</a>
+  <a href="/register" class="btn btn-secondary mr-2">Registro</a>
+  <a href="/perfil" class="btn btn-secondary">Perfil</a>
+  <a href="api/sessions/logout" class="btn btn-secondary">Logout</a>
+</div>
