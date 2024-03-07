@@ -13,7 +13,7 @@ const usersEsquema = new mongoose.Schema(
         timestamps: {
             updatedAt: 'DateUltimateMod', createdAt: 'DateOn'
         }
-    }
+    }, {strict:false}
 )
 
 export const userModel = mongoose.model('users', usersEsquema)

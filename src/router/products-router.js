@@ -12,6 +12,7 @@ import mongoose from "mongoose";
 import {
   io
 } from "../app.js";
+/* import { auth } from "./viewsRouter.js"; */
 export const router = Router();
 export const managerProducts = new ManagerProducts();
 
@@ -27,7 +28,9 @@ function idValid(id, res) {
   }
 }
 
-router.get("/", async (req, res) => {
+router.get("/"/* , auth */,async (req, res) => {
+  let user = req.user
+
   try {
     let page = 1;
     if (req.query.page) {
@@ -50,7 +53,7 @@ router.get("/", async (req, res) => {
       /* compara por cadena de texto, si no es igual a true, lo pone en false */
         disp = req.query.disp === "true";
     } else {
-        return res.status(404).json({ error: 'Debe ser un dato tipo boolean (true o false)' });
+        return res.status(400).json({ error: 'Debe ser un dato tipo boolean (true o false)' });
     }
 
     let products = await managerProducts.getProducts(
@@ -65,6 +68,7 @@ router.get("/", async (req, res) => {
     }
 
     res.status(200).render("viewProducts", {
+      user: user,
       products: products.docs,
       totalPages: products.totalPages,
       hasNextPage: products.hasNextPage,
@@ -79,7 +83,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id" /*, auth */,async (req, res) => {
   try {
     let {
       id
@@ -104,7 +108,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", upload.none(), async (req, res) => {
+router.post("/"/*,  auth */,upload.none(), async (req, res) => {
   try {
     let {
       title,
@@ -123,7 +127,7 @@ router.post("/", upload.none(), async (req, res) => {
 
     let exReg = /[0-9]/;
     if (exReg.test(title) || exReg.test(description) || exReg.test(category)) {
-      return res.status(404).json({
+      return res.status(400).json({
         error: "Controlar error numerico en  los siguientes campos: title, description, code, category",
       });
     }
@@ -154,7 +158,7 @@ router.post("/", upload.none(), async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id"/* , auth */,async (req, res) => {
   try {
     let {
       id
@@ -171,7 +175,7 @@ router.put("/:id", async (req, res) => {
     }
 
     if (req.body._id) {
-      return res.status(404).json({
+      return res.status(400).json({
           error: "no se puede modificar la propiedad _id"
         });
     }
@@ -194,7 +198,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id"/*,  auth */,async (req, res) => {
   try {
     let {
       id
@@ -230,4 +234,3 @@ router.delete("/:id", async (req, res) => {
     });
   }
 });
-

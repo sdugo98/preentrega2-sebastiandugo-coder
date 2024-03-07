@@ -4,17 +4,18 @@
             <h1 class="display-4 text-center mt-4 text-dark">LOGIN</h1>
             <hr class="hr-divider">
 
+            <a href="/api/sessions/github" class="btn btn-primary btn-lg d-flex flex-row justify-content-center align-items-center m-3">
+                <img src="/images/logotipo-de-github.png" alt="GitHub Logo" class="github-logo"> ACCEDER CON GITHUB
+            </a>
+
+
+
             <form action="/api/sessions/login" method="post">
-                {{#if error}}
-                    <div class="alert alert-danger">
-                        {{error}}
-                    </div>
-                {{/if}}
-                {{#if message}}
-                    <div class="alert alert-success">
-                        {{message}}
-                    </div>
-                {{/if}}
+     {{!--            {{#if message}} --}}
+                <div id="mensaje">
+       {{!--              {{message}} --}}
+                </div>
+       {{!--          {{/if}} --}}
 
                 <div class="mb-3">
                     <label for="email" class="form-label">Coloque su Email:</label>
@@ -26,17 +27,12 @@
                     <input type="password" class="form-control" id="password" name="password">
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>
+                <button type="submit" id="btnSubmit"class="btn btn-primary btn-lg">Ingresar</button>
             </form>
         </div>
     </div>
 </div>
 
-<div class="container text-center mt-4">
-    <h2 class="text-muted">Dirigirse a:</h2> <!-- Cambié el color a gris oscuro -->
-    <a href="/" class="btn btn-secondary btn-lg mr-2">Home</a>
-    <a href="/login" class="btn btn-secondary btn-lg mr-2">Login</a>
-    <a href="/register" class="btn btn-secondary btn-lg mr-2">Registro</a>
-    <a href="/perfil" class="btn btn-secondary btn-lg">Perfil</a>
-    <a href="api/sessions/logout" class="btn btn-secondary btn-lg">Logout</a>
-</div>
+
+{{>menu1}}
+<script src="/js/login.js"></script>

@@ -45,7 +45,7 @@ Swal.fire({
       newMessage.innerHTML = `<strong>${datos.user}:</strong>
       <p>${datos.message}</p><br>`;
       containerMessages.append(newMessage);
-      /* mantener abajo el scroll */
+      /* mantener abajo el scrool */
       containerMessages.scrollTop = containerMessages.scrollHeight;
     });
   } catch (error) {

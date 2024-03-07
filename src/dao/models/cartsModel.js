@@ -1,9 +1,8 @@
 import mongoose from 'mongoose';
-
-export const cartsModel = mongoose.model('Carts', new mongoose.Schema(
+const cartsSchema = new mongoose.Schema( 
+/* export const cartsModel = mongoose.model('Carts', new mongoose.Schema( */
     {
         title: { type: String, required: true, unique: true }, 
-        /* products: { type: Array, default: [] }, */
         products: {
             type:[
                 {
@@ -17,4 +16,12 @@ export const cartsModel = mongoose.model('Carts', new mongoose.Schema(
         },
         status: { type: Boolean, default: true }
     }
-));
+);
+
+cartsSchema.pre('findOne', function(){
+    this.populate({
+        path: 'products.product'
+    })
+})
+
+export const cartsModel = mongoose.model('Carts', cartsSchema)

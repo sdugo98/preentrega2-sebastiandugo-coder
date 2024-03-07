@@ -1,5 +1,6 @@
 const socket = io();
 
+
 const resFetch = document.getElementById("resFetch");
 const formAdd = document.getElementById("addProductForm");
 formAdd.addEventListener("submit", async (e) => {
@@ -12,7 +13,7 @@ formAdd.addEventListener("submit", async (e) => {
       method: "POST",
       body: dataForm,
     })
-      .then((response) => response.json())
+    .then((response) => response.json())
       .then((data) => {
         console.log("fetch enviado");
         resFetch.innerHTML = `<p>Producto Agregado</p>`;
@@ -34,11 +35,11 @@ socket.on("listProduct", (products) => {
       <h4 class="card-title">${product.title}</h4>
       <p class="card-text">code: ${product.code} ID: ${product.id}</p>
       <p class="card-title">Precio: ${product.price} </p>
-    </div>
-    <a href="/api/products/${product._id}" class="btn btn-detail">Ver detalle</a>
-    <button class="btn btn-success mt-2 btnAddToCart" data-product-id="${product._id}">Agregar Al carrito</button>
+      </div>
+      <a href="/api/products/${product._id}" class="btn btn-detail">Ver detalle</a>
+      <button class="btn btn-success mt-2 btnAddToCart" data-product-id="${product._id}">Agregar Al carrito</button>
   </div>
-        `;
+  `;
     containerProd.innerHTML += listMod;
   });
 });
@@ -75,13 +76,13 @@ const btnsAddToCart = document.querySelectorAll(".btnAddToCart");
 
     try {
       fetch(
-        `http://localhost:8080/api/carts/657652f1fd69e3f5f2d60663/product/${productId}`,
+        `http://localhost:8080/api/carts/657a877e2197c85449ab36b2/product/${productId}`,
         {
           method: "POST",
         }
       ).then(
         Toastify({
-          text: `SE AGREGO UN PRODUCTO AL CARRITO CON ID: 657652f1fd69e3f5f2d60663`,
+          text: `SE AGREGO UN PRODUCTO AL CARRITO CON ID: 657a877e2197c85449ab36b2`,
           duration: 3000,
         }).showToast()
       );

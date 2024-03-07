@@ -1,68 +1,83 @@
-import { Router } from 'express';
-import {userModel} from '../dao/models/usersModel.js'
-import crypto from 'crypto'
-export const router=Router()
-
-router.post('/register',async(req,res)=>{
-    let {nombre, email, password} = req.body
-
-    if(!nombre || !email || !password){
-        return res.redirect('/register?error=Complete los datos')
+import {
+    Router
+  } from "express";
+  import {
+    userModel
+  } from "../dao/models/usersModel.js";
+  import passport from "passport";
+  import {
+    generateToken,
+    validPass
+  } from "../utils.js";
+  export const router = Router();
+  
+  router.post(
+    "/register",
+    passport.authenticate("register", {
+      failureRedirect: "/api/sessions/errorRegister",
+    }),
+    async (req, res) => {
+      let {
+        email
+      } = req.body;
+      return res.redirect(`/login?message=usuario ${email} registrado`);
     }
-
-    let existUserInBD = await userModel.findOne({email})
-    if(existUserInBD){
-        return res.redirect('/register?error=Existen usuarios con el email ' + email)
-    }
-    try {
-        let user
-        if (email === 'adminCoder@coder.com' && password==='adminCod3r123') {
-            /*ENCRIPTAR CONTRASEÑA*/
-                password=crypto.createHmac("sha256", 'udmv222').update(password).digest('hex')
-                user = await userModel.create({nombre,email,password, rol:'Admin'})
-                return res.redirect(`/login?message=usuario ${email} registrado como ADMIN`)
-        }
-            password=crypto.createHmac("sha256", 'udmv222').update(password).digest('hex')
-                user = await userModel.create({nombre,email,password})
-                return res.redirect(`/login?message=usuario ${email} registrado`)
-    } catch (error) {
-        return res.redirect('/register?error=Error internal.')
-    }
-})
-
-router.post('/login',async(req,res)=>{
-
-    let {email, password} = req.body
-
-    if(!email || !password){
-        return res.redirect('/login?error=Complete los datos')
-    }
-    /*ENCRIPTAR CONTRASEÑA*/
-    password=crypto.createHmac("sha256", 'udmv222').update(password).digest('hex')
-    try {
-
-        let user = await userModel.findOne({email, password})
-        if(!user){
-            return res.redirect('/login?error=Datos invalidos')
-        }
-        console.log(user)
-        req.session.user={
-            nombre: user.nombre, email:user.email, rol: user.rol
-        }
-
-        res.redirect('/api/products')
-    } catch (error) {
-        return res.status(500).json({error: error.message})
-    }
-    })
-
-
-    router.get('/logout',async(req,res)=>{
-        req.session.destroy(error=>{
-            if(error){
-                res.redirect('/login?error=fallo en el logout')
+  );
+  
+  router.get("/errorRegister", (req, res) => {
+    return res.redirect("/register?error=Error en el proceso de registro");
+  });
+  
+  router.post("/login", async (req, res) => {
+      let {email, password}=req.body
+  
+      if(!email || !password) return res.status(400).send('Ingrese email y password')
+            let user = await userModel.findOne({ email });
+  
+            if (!user) {
+              return res.status(404).json({ message: "Invalid credentials" });
             }
-        })
-
-        res.redirect('/login')
+  
+            if (!validPass(user, password)) {
+              return res.status(404).json({ message: "Invalid credentials" });
+            }
+      let token = generateToken(user);
+      res.cookie("cookieColo", token, {maxAge: 1000 * 60 * 60,httpOnly: true});
+      return res.status(200).json({user:user})
+    }
+  );
+  
+  
+  
+  router.get("/errorLogin", (req, res) => {
+    return res.redirect("/login?error=Error en proceso de login");
+  });
+  
+  router.get("/logout", async (req, res) => {
+    req.session.destroy((error) => {
+      if (error) {
+        res.redirect("/login?error=fallo en el logout");
+      }
     });
+  
+    res.redirect("/login");
+  });
+  
+  router.get("/github", passport.authenticate("github", {}), (req, res) => {});
+  router.get(
+    "/callbackGithub",
+    passport.authenticate("github", {
+      failureRedirect: "/api/sessions/errorGithub",
+    }),
+    (req, res) => {
+      req.session.user = req.user;
+      res.redirect("/api/products");
+    }
+  );
+  
+  router.get("/errorGithub", (req, res) => {
+    res.status(200).json({
+      error: "error en autenticacion con Github",
+    });
+  });
+  

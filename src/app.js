@@ -11,6 +11,9 @@ import { chatManager } from "./dao/managerMongo/chatManager.js";
 import sessions from 'express-session'
 import mongoStore from 'connect-mongo'
 import mongoose from "mongoose";
+import { initPassport } from "./config/config.passport.js";
+import passport from "passport";
+import cookieParser from 'cookie-parser'
 
 const PORT = 8080;
 
@@ -20,19 +23,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`));
 
+/* CONFIGURACIONES PASSPORT */
+
+initPassport()
+app.use(passport.initialize())
+
+/* COOKIE PARSER-------------------------------------------- */
+app.use(cookieParser())
+
 /* CONFIGURAMOS HANDLEBARS */
-
-/* Configuracion sessions y connect mongo */
-app.use(sessions({
-  secret: 'udmv',
-  resave: true, saveUninitialized: true,
-  store: mongoStore.create({
-    mongoUrl: "mongodb+srv://sebastiandugo98:sebas1998@cluster0.xbb2pbe.mongodb.net/?retryWrites=true&w=majority",
-    mongoOptions:{dbName:'test'},
-    ttl:3600
-  })
-})) 
-
 
 /* Trabajar con doc Hidratados */
 app.engine(

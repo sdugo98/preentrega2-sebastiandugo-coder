@@ -5,7 +5,7 @@ import multer from "multer";
 import mongoose from "mongoose";
 import { io } from "../app.js";
 import { managerProducts } from "./products-router.js";
-import { auth } from "./viewsRouter.js";
+/* import { auth } from "./viewsRouter.js"; */
 export const router = Router();
 const managerCarts = new ManagerCarts();
 const upload = multer();
@@ -18,7 +18,7 @@ function idValid(id, res) {
   }
 }
 
-router.get("/", auth,async (req, res) => {
+router.get("/"/* , auth */,async (req, res) => {
   try {
     let carts = await managerCarts.getCarts();
     if (carts.length <= 0) {
@@ -39,7 +39,7 @@ router.get("/", auth,async (req, res) => {
   }
 });
 
-router.get("/:id", auth,async (req, res) => {
+router.get("/:id"/* , auth */,async (req, res) => {
   try {
     let { id } = req.params;
     let valid = idValid(id, res);
@@ -61,7 +61,7 @@ router.get("/:id", auth,async (req, res) => {
   }
 });
 
-router.post("/:cid/product/:pid", auth,async (req, res) => {
+router.post("/:cid/product/:pid"/* , auth */,async (req, res) => {
   try {
     let { cid } = req.params;
     let valid = idValid(cid, res);
@@ -93,7 +93,7 @@ router.post("/:cid/product/:pid", auth,async (req, res) => {
   }
 });
 
-router.post("/", auth,upload.none(), async (req, res) => {
+router.post("/"/* , auth */,upload.none(), async (req, res) => {
   try {
     let { title } = req.body;
     if (!title) {
@@ -101,7 +101,7 @@ router.post("/", auth,upload.none(), async (req, res) => {
     }
     let exReg = /[0-9]/;
     if (exReg.test(title)) {
-      return res.status(404).json({
+      return res.status(400).json({
         error:
           'Controlar error numerico',
       });
@@ -120,7 +120,7 @@ router.post("/", auth,upload.none(), async (req, res) => {
 });
 
 
-router.delete("/:cid/product/:pid", auth,async (req, res) => {
+router.delete("/:cid/product/:pid"/* , auth */,async (req, res) => {
   try {
     let { cid } = req.params;
     let valid = idValid(cid, res);
@@ -153,7 +153,7 @@ router.delete("/:cid/product/:pid", auth,async (req, res) => {
 });
 
 
-router.delete("/:cid", auth,async (req, res) => {
+router.delete("/:cid"/* , auth */,async (req, res) => {
   try {
     let { cid } = req.params;
     let valid = idValid(cid, res);
@@ -177,7 +177,7 @@ router.delete("/:cid", auth,async (req, res) => {
 
 
 
-router.put("/:id", auth,async (req, res) => {
+router.put("/:id"/* , auth */,async (req, res) => {
   try {
     let { id } = req.params;
     let valid = idValid(id);
@@ -204,7 +204,7 @@ router.put("/:id", auth,async (req, res) => {
 });
 
 
-router.put("/:cid/product/:pid", auth,async (req, res) => {
+router.put("/:cid/product/:pid"/* , auth */,async (req, res) => {
   try {
     let { cid } = req.params;
     let valid = idValid(cid, res);
