@@ -6,30 +6,38 @@ import { router as productManagerRouter } from "./router/products-router.js";
 import { router as cartManagerRouter } from "./router/carts-router.js";
 import { router as chatManagerRouter } from "./router/chat-router.js";
 import { router as sessionsManagerRouter } from "./router/sessions-router.js";
+/* import { SessionsRouter } from "./router/sessions-router.js"; */
 import { __dirname } from "./utils.js";
-import { chatManager } from "./dao/managerMongo/chatManager.js";
+/* import { chatManager } from "./dao/managerMongo/chatManager.js";
 import sessions from 'express-session'
-import mongoStore from 'connect-mongo'
+import mongoStore from 'connect-mongo' */
 import mongoose from "mongoose";
 import { initPassport } from "./config/config.passport.js";
 import passport from "passport";
 import cookieParser from 'cookie-parser'
+import { config } from "./config/config.js";
+import { ChatController } from "./controller/chatController.js";
 
-const PORT = 8080;
+const PORT = config.PORT;
 
 const app = express();
+/* export const sessionsRouter = new SessionsRouter() */
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`));
 
+
+/* COOKIE PARSER---------------------------------------------- */
+app.use(cookieParser())
 /* CONFIGURACIONES PASSPORT */
 
 initPassport()
 app.use(passport.initialize())
 
-/* COOKIE PARSER-------------------------------------------- */
-app.use(cookieParser())
+/* BORRAMOS TODA CONFIGURACION DE SESSIONS-------------------------------- */
+/* app.use(passport.session()) */
+
 
 /* CONFIGURAMOS HANDLEBARS */
 
@@ -44,6 +52,7 @@ app.engine(
   })
 );
 
+
 /* app.engine("handlebars", engine()); */
 app.set("view engine", "handlebars");
 app.set("views", `${__dirname}/views`);
@@ -52,14 +61,15 @@ app.set("views", `${__dirname}/views`);
 app.use("/api/chat", chatManagerRouter);
 app.use("/api/products", productManagerRouter);
 app.use("/api/carts", cartManagerRouter);
-app.use("/api/sessions", sessionsManagerRouter)
+/* app.use("/api/sessions", sessionsRouter.getRouter()) */
+app.use('/api/sessions', sessionsManagerRouter)
 app.use("/", viewsRouter);
 
 const serverHTTP = app.listen(PORT, () => {
   console.log(`Server escuchando en puerto ${PORT}`);
 });
 
-const managerChat = new chatManager();
+const managerChat = new ChatController();
 
 export const io = new Server(serverHTTP);
 io.on("connection", (socket) => {
@@ -78,7 +88,7 @@ io.on("connection", (socket) => {
 /*CONEXION CON MONGOOSE */
 try {
   await mongoose.connect(
-    "mongodb+srv://sebastiandugo98:sebas1998@cluster0.xbb2pbe.mongodb.net/?retryWrites=true&w=majority"
+    config.MONGO_URL
   );
   console.log("BD Online");
 } catch (error) {

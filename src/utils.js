@@ -1,36 +1,30 @@
 import {fileURLToPath} from 'url'
 import { dirname } from 'path'
-import jwt from "jsonwebtoken"
-
+import passport from 'passport'
+import jwt from 'jsonwebtoken'
 const __filename = fileURLToPath(import.meta.url)
 export const __dirname = dirname(__filename)
 
 import bcrypt from 'bcrypt'
 
 export const hashearPass = (password)=>bcrypt.hashSync(password,bcrypt.genSaltSync(10))
+export const validPassword=(user, password)=>bcrypt.compareSync(password, user.password)
 
-export const validPass = (user,password)=>bcrypt.compareSync(password,user.password)
+export const passportCall=(estrategy)=>{
+    return function(req, res, next) {
+        passport.authenticate(estrategy, function(err, user, info, status) {
+          if (err) { return next(err) }
+          if (!user) {
+            /* como api/products NO entra en el ruteo padre, debido a problemas de tiempo, no puedo aplicarle una de mis respuestas- Asi que opto, por devolver un error normal*/
+                 /* return res.status(200).json(info.message?info.message:info.toString()) */
+                let error = info.message ? info.message : info.toString();
+                return res.redirect(`/errorHandlebars/?error=${error}`)
+          }
+          req.user=user
+          return next()
+        })(req, res, next);
+      }
+}
 
-export const TOKENKEY= 'keydugo98'
-export const generateToken=(user)=>jwt.sign({...user}, TOKENKEY, {expiresIn: '24h'})
-
-/* export const auth=(req,res,next)=>{
-     if(!req.headers.authorization){
-      return res.status(401).json({error: 'error middle'})
-    }
-  
-    let token = req.headers.authorization.split(" ")[1]
-    try {
-      let user= jwt.verify(token, TOKENKEY)
-      req.user=user
-      next()
-    } catch (error) {
-        return res.status(404).json({error:"error verify"})
-    } 
-    if(!req.cookie.cookieColo){
-      return res.status(404).json({error: 'usuario no identificado'})
-    }
-
-    let token= req.cookie.cookieColo
-    next()
-  } */
+export const TOKENKEY = 'keyColo2'
+export const genToken = (user) =>jwt.sign({...user}, TOKENKEY,{expiresIn: '1h'})

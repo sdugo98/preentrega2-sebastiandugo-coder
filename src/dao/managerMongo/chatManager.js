@@ -1,4 +1,4 @@
-import { chatsModel } from "../models/chatsModel.js";
+/* import { chatsModel } from "../models/chatsModel.js";
 
 export class chatManager{
 
@@ -19,4 +19,4 @@ async saveMessage(datos){
     return null    
     }
     }
-}
+} */

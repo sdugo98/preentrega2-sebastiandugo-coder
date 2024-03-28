@@ -6,16 +6,20 @@
 <br><br>
 <div class="container text-center">
   <div class="card p-4 m-5">
-    <h1 class="display-4">¡Bienvenido, {{user.nombre}}!</h1>
+    <h1 class="display-4">¡Bienvenido, {{user.first_name}}!</h1>
     <h2 class="h4 mt-3">Su rol es: <span class="badge bg-primary">{{user.rol}}</span></h2>
   </div>
 </div>
 
-
   <div class="container-forms">
+      <div class="mt-4">
+    <div id="resFetch" class="text-center"></div>
+  </div>
+
     <div class="card">
       <div class="card-body">
         <h2 class="text-center">AGREGAR PRODUCTO</h2>
+        <div id="error"></div>
         <form id="addProductForm">
           <div class="form-group">
             <label for="title">TITLE</label>
@@ -52,7 +56,7 @@
         <form id="deleteProductForm">
           <div class="form-group">
             <label for="deleteID">ID</label>
-            <input id="deleteID" type="Number" class="form-control" />
+            <input id="deleteID" type="text" class="form-control" />
           </div>
           <button type="submit" class="btn btn-danger mt-2">BORRAR</button>
         </form>
@@ -60,10 +64,6 @@
     </div>
   </div>
 
-  <div class="mt-4">
-    <h2 class="text-center">Accion realizada:</h2>
-    <div id="resFetch" class="text-center"></div>
-  </div>
 
   <br>
   <hr>

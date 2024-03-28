@@ -1,83 +1,88 @@
-import {
-    Router
-  } from "express";
-  import {
-    userModel
-  } from "../dao/models/usersModel.js";
-  import passport from "passport";
-  import {
-    generateToken,
-    validPass
-  } from "../utils.js";
-  export const router = Router();
-  
-  router.post(
-    "/register",
-    passport.authenticate("register", {
-      failureRedirect: "/api/sessions/errorRegister",
-    }),
-    async (req, res) => {
-      let {
-        email
-      } = req.body;
-      return res.redirect(`/login?message=usuario ${email} registrado`);
+import { Router } from "express";
+import { userModel } from "../dao/models/usersModel.js";
+import passport from "passport";
+import { genToken, hashearPass, passportCall, validPassword } from "../utils.js";
+/* import { MyRouter } from "./router.js"; */
+export const router = Router();
+
+router.post('/registro', /* [public] */ passportCall('register'),async(req,res)=>{
+try {
+  if(req.error){
+    return res.redirect(`/registro/?error=${req.error}`)
     }
-  );
+    res.redirect('/login')
+} catch (error) {
+  return redirect('/errorServer')
+}})
+
+router.post('/login', /* [public] */ passportCall('login'), (req, res) => {
+  if (req.error) {
+      return res.redirect(`/login/?error=${req.error}`);
+  }
+
+  let token = genToken(req.user);
+  res.cookie('CookieUser', token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
+  res.redirect('/current');
+});
+
+
+
+
+router.get('/github', /* public */ passportCall('github', {}), (req,res)=>{})
+router.get('/callbackGithub',/* [public] */passportCall('github'),
+  (req,res)=>{
+    let user = req.user
+    let token = genToken(user)
+    res.cookie('CookieUser', token, {httpOnly:true, maxAge:1000*60*60})
+    res.redirect('/current')
+  })
+
+
+  router.get('/logout', /* [public] */async(req,res)=>{
+    res.clearCookie('CookieUser')
+    res.redirect('/login')
+  })
+
+
   
-  router.get("/errorRegister", (req, res) => {
-    return res.redirect("/register?error=Error en el proceso de registro");
-  });
-  
-  router.post("/login", async (req, res) => {
-      let {email, password}=req.body
-  
-      if(!email || !password) return res.status(400).send('Ingrese email y password')
-            let user = await userModel.findOne({ email });
-  
-            if (!user) {
-              return res.status(404).json({ message: "Invalid credentials" });
+/* 
+export class SessionsRouter extends MyRouter{
+      init(){
+        
+        this.post('/registro' , ["public"] , passportCall('register'),(req,res)=>{
+            /* res.successNewUser('Registro Exitoso', req.user) 
+            res.redirect('/login')
+        })
+        
+    
+        this.post('/login', ['public'],passportCall('login'), (req,res)=>{
+    
+    
+    
+          let token= genToken(req.user)
+          res.cookie('CookieUser', token, {httpOnly:true, maxAge: 1000*60*60})
+         /*  res.success(`Login Exitoso, Bienvenido ${req.user.first_name} Su rol: ${req.user.rol}`)
+         res.redirect('/current')
+        })
+    /*      RUTA PRUEBA QUE ANDA BIEN LOS PERMISOS, (HASTA QUE PASE TODOS LOS ROUTER AL CUSTOM ROUTER) 
+      this.get('/support', ['admin'],(req,res)=>{
+        res.success('Servicio de Soporte de pagina, habilitado solo para Administradores!')
+      }) */
+      /*   this.get("/github", ['public'],passportCall("github", {}), (req, res) => {});
+          this.get(
+            "/callbackGithub",["public"],
+            passportCall("github"),
+            (req, res) => {
+              let user = req.user;
+              let token= genToken(user)
+              res.cookie('CookieUser', token, {httpOnly:true, maxAge: 1000*60*60})
+              res.redirect("/current");
             }
-  
-            if (!validPass(user, password)) {
-              return res.status(404).json({ message: "Invalid credentials" });
-            }
-      let token = generateToken(user);
-      res.cookie("cookieColo", token, {maxAge: 1000 * 60 * 60,httpOnly: true});
-      return res.status(200).json({user:user})
-    }
-  );
-  
-  
-  
-  router.get("/errorLogin", (req, res) => {
-    return res.redirect("/login?error=Error en proceso de login");
-  });
-  
-  router.get("/logout", async (req, res) => {
-    req.session.destroy((error) => {
-      if (error) {
-        res.redirect("/login?error=fallo en el logout");
-      }
-    });
-  
-    res.redirect("/login");
-  });
-  
-  router.get("/github", passport.authenticate("github", {}), (req, res) => {});
-  router.get(
-    "/callbackGithub",
-    passport.authenticate("github", {
-      failureRedirect: "/api/sessions/errorGithub",
-    }),
-    (req, res) => {
-      req.session.user = req.user;
-      res.redirect("/api/products");
-    }
-  );
-  
-  router.get("/errorGithub", (req, res) => {
-    res.status(200).json({
-      error: "error en autenticacion con Github",
-    });
-  });
-  
+          )
+          
+          this.get("/logout", ['public'],async (req, res) => {
+            res.clearCookie('CookieUser');
+          
+            res.redirect("/login");
+          });
+          } */

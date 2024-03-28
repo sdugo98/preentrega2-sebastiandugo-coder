@@ -24,7 +24,7 @@ export class ManagerCarts {
   async getCartById(cartId) {
     let getCart;
     try {
-      getCart = await cartsModel.findOne({ status: true, _id: cartId }).populate('products.product');
+      getCart = await cartsModel.findOne({ status: true, _id: cartId })/* .populate('products.product'); */
       console.log("Carrito encontrado por id" + getCart);
       return getCart;
     } catch (error) {
@@ -72,7 +72,7 @@ export class ManagerCarts {
         console.log(cartMod);
         if (cartMod.modifiedCount > 0) {
           console.log("Modificado");
-          let cart = await cartsModel.findOne({ _id: cid }).populate('products.product') 
+          let cart = await cartsModel.findOne({ _id: cid })/* .populate('products.product') */ 
           return cart;
         }
       } catch (error) {
@@ -120,7 +120,7 @@ export class ManagerCarts {
         console.log(cartMod);
         if (cartMod.modifiedCount > 0) {
           console.log("Modificado");
-          let cart = await cartsModel.findOne({ _id: cid }).populate('products.product') 
+          let cart = await cartsModel.findOne({ _id: cid })/* .populate('products.product')  */
           return cart;
         }
       } catch (error) {
@@ -176,7 +176,7 @@ async addProductInCart(cid, product) {
       console.log(cartMod);
       if (cartMod.modifiedCount > 0) {
         console.log("Modificado");
-        let cart = await cartsModel.findOne({ _id: cid }).populate('products.product') 
+        let cart = await cartsModel.findOne({ _id: cid })/* .populate('products.product')  */
         return cart;
       }
     } catch (error) {
@@ -215,7 +215,7 @@ async deleteProductsAllInCart(cid){
       console.log(cartMod);
       if (cartMod.modifiedCount > 0) {
         console.log("Modificado");
-        let cart = await cartsModel.findOne({ _id: cid }).populate('products.product') 
+        let cart = await cartsModel.findOne({ _id: cid })/* .populate('products.product')  */
         return cart;
       }
     } catch (error) {
@@ -297,7 +297,7 @@ let cartMod = await cartsModel.updateOne(
       console.log(cartMod);
       if (cartMod.modifiedCount > 0) {
         console.log("Modificado");
-        let cart = await cartsModel.findOne({ _id: cid }).populate('products.product') 
+        let cart = await cartsModel.findOne({ _id: cid })/* .populate('products.product')  */
         return cart;
       }
     } catch (error) {

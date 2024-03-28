@@ -57,8 +57,8 @@ export class ManagerProducts {
     }
   }
 
-  async getProductById(id) {
-    console.log("entro a buscar");
+  static async getProductById(id) {
+    console.log('entro')
     let getProduct;
     try {
       getProduct = await productsModel.findOne({ status: true, _id: id });

@@ -4,13 +4,13 @@ btnAddToCart.addEventListener("click", (e) => {
   console.log(productId);
   try {
     fetch(
-      `http://localhost:8080/api/carts/657652f1fd69e3f5f2d60663/product/${productId}`,
+      `http://localhost:8080/api/carts/657a877e2197c85449ab36b2/product/${productId}`,
       {
         method: "POST",
       }
     ).then(
       Toastify({
-        text: `SE AGREGO UN PRODUCTO AL CARRITO CON ID: 657652f1fd69e3f5f2d60663`,
+        text: `SE AGREGO UN PRODUCTO AL CARRITO CON ID: 657a877e2197c85449ab36b2`,
         duration: 3000,
       }).showToast()
     );

@@ -1,18 +1,14 @@
 import { Router } from "express";
 import { productsModel } from "../dao/models/productsModel.js";
-import passport from "passport";
-
+import { passportCall } from "../utils.js";
 export const router = Router();
 
-/* ---------------------------------------BORRAMOS SESSIONS------------------------------ */
-/* 
-/* 
 export const auth =(req,res,next)=>{
   if(!req.session.user){
     res.redirect('/login?error=Debes iniciar sesion para acceder a la web')
   }
   next()
-} */
+}
 
 router.get("/", async (req, res) => {
   try {
@@ -22,18 +18,41 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get('/register',(req,res)=>{
+router.get('/registro',(req,res)=>{
   let {error} = req.query
-
+  
   res.status(200).render('register', {error});
 });
 
 router.get('/login',(req,res)=>{
-
-  res.status(200).render('login');
+  let {error, message} = req.query 
+  
+  res.status(200).render('login', {error, message});
 });
 
-router.get('/perfil', passport.authenticate('jwt', {session:false}),(req,res)=>{
+router.get('/current',passportCall('jwt'),(req,res)=>{
   let user = req.user
-  res.render('perfil', {user});
+  res.status(200).render('perfil', {user});
+
 });
+
+/* ENDPOINT PARA PROBAR SEGURIDAD */
+router.get('/support', passportCall('jwt'), /* securityAccess(req.user), */(req,res)=>{
+  res.render('support')
+})
+
+/* ERROR HANDLEBAR GENERAL */
+router.get('/errorHandlebars', (req,res)=>{
+ let {error} = req.query
+  res.render('errorHandlebars', {error})
+})
+
+/* ERROR SERVIDOR */
+router.get('/errorServer', (req,res)=>{
+  res.render('errorServer')
+})
+
+/* TOMA ENDPOINT ENPOINT ERRONEO */
+router.get('*', (req,res)=>{
+  res.render('404')
+})

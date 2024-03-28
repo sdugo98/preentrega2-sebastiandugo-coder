@@ -34,7 +34,6 @@ Swal.fire({
         alert("Escriba un mensaje");
         return null;
       }
-
       socket.emit("message", { user: res.value, message: message });
       inputMessage.value = "";
     });
@@ -49,6 +48,6 @@ Swal.fire({
       containerMessages.scrollTop = containerMessages.scrollHeight;
     });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message});
   }
 });
