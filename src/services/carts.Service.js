@@ -31,6 +31,9 @@ export class CartsService {
     async modifiedProductInCart(cid,product, quantity){
         return await this.dao.modifiedProductInCart(cid,product, quantity)
     }
+    async confirmBuy(cart){
+        return await this.dao.confirmBuy(cart)
+    }
 }
 import { CartsDAO } from "../dao/cartsDAO.js"
 export const cartsService = new CartsService(CartsDAO)

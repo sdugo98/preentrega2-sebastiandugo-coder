@@ -4,6 +4,7 @@ import { userModel } from "../dao/models/usersModel.js";
 import { TOKENKEY, genToken, hashearPass, validPassword } from "../utils.js";
 import github from 'passport-github2'
 import passportJWT from 'passport-jwt'
+import {cartsService } from "../services/carts.Service.js";
 
 const searchToken=(req)=>{
   let token = null
@@ -48,16 +49,20 @@ export const initPassport = () => {
               first_name,last_name,age,
               email,
               password: hashearPass(password),
-              cart: [{ cart: "657a877e2197c85449ab36b2" }],
+              cart: [{ cart: "INVALID" }],
               rol: "Admin",
             });
             return done(null, user)
           }
 
+          let cartTitle = `Carro de: ${last_name}`
+          let cart = await cartsService.createCart(cartTitle)
+          
+
 
         user = await userModel.create({
           first_name, last_name, email, rol,age,
-          cart: [{ cart: "657a877e2197c85449ab36b2" }],
+          cart: cart,
           password: hashearPass(password)
         })
         return done(null, user)

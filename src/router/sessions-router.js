@@ -5,7 +5,7 @@ import { genToken, hashearPass, passportCall, validPassword } from "../utils.js"
 /* import { MyRouter } from "./router.js"; */
 export const router = Router();
 
-router.post('/registro', /* [public] */ passportCall('register'),async(req,res)=>{
+router.post('/registro',passportCall('register'),async(req,res)=>{
 try {
   if(req.error){
     return res.redirect(`/registro/?error=${req.error}`)
@@ -15,7 +15,7 @@ try {
   return redirect('/errorServer')
 }})
 
-router.post('/login', /* [public] */ passportCall('login'), (req, res) => {
+router.post('/login', passportCall('login'), (req, res) => {
   if (req.error) {
       return res.redirect(`/login/?error=${req.error}`);
   }
@@ -28,8 +28,8 @@ router.post('/login', /* [public] */ passportCall('login'), (req, res) => {
 
 
 
-router.get('/github', /* public */ passportCall('github', {}), (req,res)=>{})
-router.get('/callbackGithub',/* [public] */passportCall('github'),
+router.get('/github',passportCall('github', {}), (req,res)=>{})
+router.get('/callbackGithub',passportCall('github'),
   (req,res)=>{
     let user = req.user
     let token = genToken(user)
@@ -38,7 +38,7 @@ router.get('/callbackGithub',/* [public] */passportCall('github'),
   })
 
 
-  router.get('/logout', /* [public] */async(req,res)=>{
+  router.get('/logout',async(req,res)=>{
     res.clearCookie('CookieUser')
     res.redirect('/login')
   })

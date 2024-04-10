@@ -1,6 +1,10 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-8">
+      <div id="cartUser" cart={{user.cart._id}}> </div> 
+              <div class="mt-4">
+          <div id="resFetch" class="text-center"></div>
+        </div>
       <h1 class="text-center mt-4 view-title">DETALLE DE PRODUCTO:</h1>
       <hr class="hr-divider" />
 
@@ -12,6 +16,7 @@
               <div class="fw-bold">Descripción:
                 {{getProductById.description}}</div>
               <div class="fw-bold">ID: {{getProductById._id}}</div>
+              <div class="fw-bold">Stock: {{getProductById.stock}}</div>
               <div class="text-success">${{getProductById.price}}</div>
             </h4>
           </li>

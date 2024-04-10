@@ -26,6 +26,19 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`));
+/* Configuracion sessions y connect mongo */
+
+/* BORRAMOS TODA CONFIGURACION DE SESSIONS-------------------------------- */
+/* app.use(sessions({
+  secret: 'udmv',
+  resave: true, saveUninitialized: true,
+  store: mongoStore.create({
+    mongoUrl:'mongodb+srv://sebastiandugo98:sebas1998@cluster0.xbb2pbe.mongodb.net/?retryWrites=true&w=majority',
+    mongoOptions:{dbName:'test'},
+    ttl:3600
+  })
+}))  */
+
 
 
 /* COOKIE PARSER---------------------------------------------- */

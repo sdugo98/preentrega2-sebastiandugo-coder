@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { auth } from "./viewsRouter.js";
-import { passportCall } from "../utils.js";
+import { passportCall, securityAcces } from "../utils.js";
 import { ChatController } from "../controller/chatController.js";
 export const router = Router();
 /* export const chatController = new ChatController() */
@@ -13,4 +13,4 @@ export const router = Router();
   }
 });
  */
-router.get("/", passportCall('jwt'),ChatController.render);
+router.get("/", passportCall('jwt'),securityAcces(["user"]),ChatController.render);

@@ -2,24 +2,22 @@
   <h1 class="text-center mt-4 view-title">View Products</h1>
   <hr class="hr-divider" />
 
-{{>menu2}}
-<br><br>
-<div class="container text-center">
-  <div class="card p-4 m-5">
-    <h1 class="display-4">¡Bienvenido, {{user.first_name}}!</h1>
-    <h2 class="h4 mt-3">Su rol es: <span class="badge bg-primary">{{user.rol}}</span></h2>
+  {{>menu2}}
+  <br><br>
+  <div class="container text-center">
+    <div class="card p-4 m-5">
+      <h1 class="display-4">¡Bienvenido, {{user.first_name}}!</h1>
+      <h2 class="h4 mt-3">Su rol es: <span class="badge bg-primary">{{user.rol}}</span></h2>
+      <li class="list-group-item h4" id="cartUser" cart={{user.cart._id}}><strong>ID cart:</strong> {{user.cart._id}}</li>
+    </div>
   </div>
-</div>
-
-  <div class="container-forms">
-      <div class="mt-4">
-    <div id="resFetch" class="text-center"></div>
-  </div>
-
-    <div class="card">
-      <div class="card-body">
-        <h2 class="text-center">AGREGAR PRODUCTO</h2>
-        <div id="error"></div>
+  <div class="card">
+    <div class="card-body">
+      <h2 class="text-center">AGREGAR PRODUCTO</h2>
+      <div class="container-forms">
+        <div class="mt-4">
+          <div id="resFetch" class="text-center"></div>
+        </div>
         <form id="addProductForm">
           <div class="form-group">
             <label for="title">TITLE</label>
@@ -76,9 +74,10 @@
       <div class="card-body">
         <h4 class="card-title">{{this.title}}</h4>
         <p class="card-text">code: {{this.code}} ID: {{this.id}}</p>
+        <p class="card-text">Stock: {{this.stock}}</p>
         <p class="text-success">Precio: ${{this.price}} </p>
       </div>
-      <a href="/api/products/{{this._id}}" class="btn btn-detail btn-primary">Ver detalle</a>
+      <a href="products/{{this._id}}" class="btn btn-detail btn-primary">Ver detalle</a>
       <button class="btn btn-success mt-2 btnAddToCart" data-product-id="{{this._id}}">Agregar Al carrito</button>
     </div>
     {{/each}}
@@ -89,16 +88,16 @@
 
   <div class="text-center">
     {{#if sort}}
-    <a href="/api/products/?page=1&sort={{sort}} " class="btn btn-pagination btn-primary">Pág.1</a>
+    <a href="/products?page=1&sort={{sort}} " class="btn btn-pagination btn-primary">Pág.1</a>
     {{else}}
-    <a href="/api/products/?page=1" class="btn btn-pagination btn-primary">Pág.1</a>
+    <a href="/products?page=1" class="btn btn-pagination btn-primary">Pág.1</a>
     {{/if}}
 
     {{#if hasPrevPage}}
     {{#if sort}}
-    <a href="/api/products/?page={{prevPage}}&sort={{sort}} " class="btn btn-pagination btn-primary">Pág.Ant.</a>
+    <a href="?/productspage={{prevPage}}&sort={{sort}} " class="btn btn-pagination btn-primary">Pág.Ant.</a>
     {{else}}
-    <a href="/api/products/?page={{prevPage}}" class="btn btn-pagination btn-primary">Pág.Ant.</a>
+    <a href="/products?page={{prevPage}}" class="btn btn-pagination btn-primary">Pág.Ant.</a>
     {{/if}}
     {{else}}
     <span class="btn btn-pagination btn-primary">Pág.Ant.</span>
@@ -106,15 +105,15 @@
 
     {{#if hasNextPage}}
     {{#if sort}}
-    <a href="/api/products/?page={{nextPage}}&sort={{sort}} " class="btn btn-pagination btn-primary">Pág.Sig.</a>
+    <a href="/products?page={{nextPage}}&sort={{sort}} " class="btn btn-pagination btn-primary">Pág.Sig.</a>
     {{else}}
-    <a href="/api/products/?page={{nextPage}}" class="btn btn-pagination btn-primary">Pág.Sig.</a>
+    <a href="/products?page={{nextPage}}" class="btn btn-pagination btn-primary">Pág.Sig.</a>
     {{/if}}
     {{else}}
     <span class="btn btn-pagination btn-primary">Pág.Sig.</span>
     {{/if}}
 
-    <a href="/api/products/?page={{totalPages}}{{#if sort}}&sort={{sort}}{{/if}}"
+    <a href="/products?page={{totalPages}}{{#if sort}}&sort={{sort}}{{/if}}"
       class="btn btn-pagination btn-primary">Ult.Pág.</a>
   </div>
 

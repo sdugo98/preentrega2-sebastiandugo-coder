@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const cartsSchema = new mongoose.Schema( 
 /* export const cartsModel = mongoose.model('Carts', new mongoose.Schema( */
     {
-        title: { type: String, required: true, unique: true }, 
+        title: { type: String, required: true }, 
         products: {
             type:[
                 {

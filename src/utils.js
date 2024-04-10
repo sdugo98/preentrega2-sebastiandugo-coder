@@ -26,5 +26,21 @@ export const passportCall=(estrategy)=>{
       }
 }
 
-export const TOKENKEY = 'keyColo2'
+export const TOKENKEY = 'keydugo98'
 export const genToken = (user) =>jwt.sign({...user}, TOKENKEY,{expiresIn: '1h'})
+
+
+export const securityAcces= (permissions = [])=>{
+  return (req,res,next)=>{
+    permissions=permissions.map(p=>p.toUpperCase())
+    if(permissions.includes("PUBLIC")){
+      return next()
+    }
+
+
+    if(!permissions.includes(req.user.rol.toUpperCase())){
+      return res.status(200).json({error: 'No tienes acceso a este recurso'})
+    }
+    return next()
+  }
+}

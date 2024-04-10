@@ -13,7 +13,7 @@ import {
   io
 } from "../app.js";
 import { auth } from "./viewsRouter.js";
-import { passportCall } from "../utils.js";
+import { passportCall, securityAcces } from "../utils.js";
 import { ProductsController } from "../controller/productsController.js";
 export const router = Router();
 export const managerProducts = new ManagerProducts();
@@ -29,13 +29,14 @@ function idValid(id, res) {
   }
 }
  */
-router.get("/", passportCall('jwt'),ProductsController.render);
+/* router.get("/"/* , passportCall('jwt'),ProductsController.render); */
 
-router.get("/:id", passportCall('jwt'),ProductsController.getProductById);
+/* router.get("/:id", passportCall('jwt'),ProductsController.getProductById); */
 
-router.post("/", passportCall('jwt'),upload.none(), ProductsController.createProduct);
+router.post("/", passportCall('jwt'),upload.none(), securityAcces(["admin"]),ProductsController.createProduct);
 
-router.put("/:id", passportCall('jwt') , ProductsController.updateProduct);
+router.put("/:id", passportCall('jwt') , securityAcces(["public"]),ProductsController.updateProduct);
 
-router.delete("/:id", passportCall('jwt'),ProductsController.deleteProduct);
+router.delete("/:id", passportCall('jwt'),securityAcces(["public"]),ProductsController.deleteProduct);
 
+/* FALTA DELETEPRODUCTSALL */

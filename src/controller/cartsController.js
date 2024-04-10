@@ -2,14 +2,17 @@ import { cartsService } from "../services/carts.Service.js";
 import mongoose from "mongoose";
 import { io } from "../app.js";
 import { productsService } from "../services/products.Service.js";
+import { ticketService } from "../services/ticket.Service.js";
+import { v4 } from "uuid";
 
 function idValid(id, res) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     let error = "Ingrese un Id Valido";
     console.log("error al validar");
-    return res.redirect(`/errorHandlebars/?error=${error}`);
+    return res.status(400).json({ error: error });
   }
 }
+
 export class CartsController {
   constructor() {}
 
@@ -25,9 +28,9 @@ export class CartsController {
         console.log(`Se estableció un límite de: ${req.query.limit}`);
       }
 
-      res.status(200).render("viewCarts", {
+      return{
         carts,
-      });
+      };
     } catch (error) {
       console.error("Error al renderizar la vista:", error);
       res.status(500).json(error.message);
@@ -47,8 +50,14 @@ export class CartsController {
         console.log("Error en la búsqueda por ID");
         return null;
       }
+/*      let total = 0
+    getCart.products.forEach(product => {
+      const subtotal = product.product.price * product.quantity;
+      total += subtotal;
+    }); 
+    console.log('ESTE ES GET CART ' + getCart) */
 
-      res.status(200).render("viewDetailCarts", { cart: getCart });
+     return getCart
     } catch (error) {
       return res.status(500).json({
         error: error.message,
@@ -76,12 +85,24 @@ export class CartsController {
         return null;
       }
 
- 
+      if(product.stock <= 0){
+        console.log('No contamos con stock ')
+        return null
+      }
+
+      
+      
       let cartMod = await cartsService.addProductInCart(cid, product);
       if (!cartMod) {
         console.log("fallo el agregado de producto");
         return null;
       }
+/* 
+/*       let body = {stock: product.stock -1} 
+
+      let saveModProduct = productsService.updateProduct(pid/* , body )
+      console.log('stock actualizado')
+       */
       console.log("carro modificado: " + cartMod);
       return res.status(200).json({ cartMod });
     } catch (error) {
@@ -228,5 +249,77 @@ static async modifiedProductInCart(req,res){
     return res.status(500).json({ error: error.message });
   }
 }
+
+static async confirmBuy(req, res) {
+  try {
+    let user = req.user
+    let { cid } = req.params;
+    let valid = idValid(cid, res);
+    if (valid) {
+      console.log("cid invalido");
+      return null;
+    }
+
+    let cart = await cartsService.getCartById(cid);
+
+    if (!cart) {
+      console.log('Fallo al obtener el carrito');
+      return null;
+    }
+
+    if (!cart.products || cart.products.length === 0) {
+      console.log('El carrito está vacío');
+      return null;
+    }
+
+    let prodOK = [];
+    let prodCancel = [];
+
+    for (const p of cart.products) {
+      let id = p.product._id
+      let prodsBD = await productsService.getProductById(id);
+      let stock = prodsBD.stock - p.quantity;
+
+      if (stock < 0) {
+        console.log(`Stock INSUFICIENTE de producto: ${p.product.title}`);
+        prodCancel.push(p);
+      } else {
+        prodOK.push(p);
+        let prodMod = await productsService.updateProduct(p.product._id, { stock: stock });
+        if (!prodMod) {
+          console.log('Error al actualizar stock');
+          return null;
+        }
+      }
+    }
+/* for of, para podeer usar await */
+    for (const prod of prodOK) {
+      let clearCart = await cartsService.deleteProductInCart(cid, prod.product._id);
+      if (!clearCart) {
+        console.log('Error al eliminar producto del carrito');
+        return null;
+      }
+    }
+
+    prodOK.forEach((prod) => {
+      prod.subtotal = (prod.product.price * prod.quantity).toFixed(2);
+    });
+
+    const total = prodOK.reduce((acc, prod) => acc + parseFloat(prod.subtotal), 0).toFixed(2);
+
+    let ticket = await ticketService.createTicket({code: v4(),amount:total, purchaser: user.email});
+    req.ticket =ticket
+    if (!ticket) {
+      console.log('Error al crear el ticket');
+      return null;
+    }
+    
+    return res.status(200).json({ ticket:ticket });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: error.message });
+  }
+}
+
 
 }

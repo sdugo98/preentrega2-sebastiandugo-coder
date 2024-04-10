@@ -10,17 +10,29 @@ cartsForm.addEventListener("submit", (e) => {
       method: "POST",
       body: cartTitle,
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("fetch enviado");
-        resFetch.innerHTML = "<p>Carrito Creado</p>";
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Server Response:", data);
 
-        cartsForm.reset();
-      });
-  } catch (error) {
-    console.error("Error:", error);
+      resFetch.classList.remove('alert-danger', 'alert-success');
+
+      if (data.error) {
+        let errorDiv = document.createElement('div');
+        errorDiv.classList.add('alert', 'alert-danger');
+        errorDiv.innerHTML = `${data.error}`;
+
+        resFetch.innerHTML = ''
+        resFetch.appendChild(errorDiv);
+        
+        }else{ 
+          resFetch.classList.add('alert', 'alert-success');
+          resFetch.innerHTML = `Producto Agregado`;
+      }
+    })
+      } catch (error) {
+    console.error("error: " + error);
   }
-});
+})
 
 socket.on("listCarts", (carts) => {
   let containerCarts = document.getElementById("containerCarts");
