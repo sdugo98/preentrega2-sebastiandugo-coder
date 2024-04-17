@@ -1,6 +1,7 @@
 const socket = io();
 const resFetch = document.getElementById("resFetch");
 const formAdd = document.getElementById("addProductForm");
+const errorAdmin = document.getElementById('resError')
 
 formAdd.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -150,8 +151,8 @@ document.addEventListener('DOMContentLoaded', function () {
             errorDiv.classList.add('alert', 'alert-danger');
             errorDiv.innerHTML = `${data.error}`;
       
-            resFetch.innerHTML = '';
-            resFetch.appendChild(errorDiv);
+            errorAdmin.innerHTML = '';
+            errorAdmin.appendChild(errorDiv);
           } else {
             Toastify({
               text: `SE AGREGO UN PRODUCTO AL CARRITO CON ID: ${cid}`,
@@ -166,8 +167,8 @@ document.addEventListener('DOMContentLoaded', function () {
         errorDiv.classList.add('alert', 'alert-danger');
         errorDiv.innerHTML = `NO PUEDES AGREGAR. ERES ADMINISTRADOR`;
   
-        resFetch.innerHTML = '';
-        resFetch.appendChild(errorDiv);
+        errorAdmin.innerHTML = '';
+        errorAdmin.appendChild(errorDiv);
       }
       
   });

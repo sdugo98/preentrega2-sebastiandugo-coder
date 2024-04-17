@@ -6,6 +6,8 @@ const __filename = fileURLToPath(import.meta.url)
 export const __dirname = dirname(__filename)
 
 import bcrypt from 'bcrypt'
+import { ERRORES_INTERNOS, STATUS_CODES } from './utils/tiposError.js'
+import { CustomError } from './utils/customError.js'
 
 export const hashearPass = (password)=>bcrypt.hashSync(password,bcrypt.genSaltSync(10))
 export const validPassword=(user, password)=>bcrypt.compareSync(password, user.password)
@@ -15,9 +17,8 @@ export const passportCall=(estrategy)=>{
         passport.authenticate(estrategy, function(err, user, info, status) {
           if (err) { return next(err) }
           if (!user) {
-            /* como api/products NO entra en el ruteo padre, debido a problemas de tiempo, no puedo aplicarle una de mis respuestas- Asi que opto, por devolver un error normal*/
-                 /* return res.status(200).json(info.message?info.message:info.toString()) */
-                let error = info.message ? info.message : info.toString();
+                
+               let error = info.message ? info.message : info.toString()
                 return res.redirect(`/errorHandlebars/?error=${error}`)
           }
           req.user=user
@@ -39,7 +40,8 @@ export const securityAcces= (permissions = [])=>{
 
 
     if(!permissions.includes(req.user.rol.toUpperCase())){
-      return res.status(200).json({error: 'No tienes acceso a este recurso'})
+      let error  =  CustomError.CustomError('NO AUTORIZADO', 'NO TIENES ACCESO A ESTE RECURSO', STATUS_CODES.ERROR_AUTENTICACION, ERRORES_INTERNOS.PERMISOS)
+      return res.render('errorHandlebars', {error})
     }
     return next()
   }

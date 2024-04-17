@@ -15,6 +15,7 @@ export class ProductsDAO{
           }
           /* establecemos un parametro general para simplificar luego simplicar el metodo a mongoose */
           let options = {
+            lean: true,
             page: page || 1,
             limit: limit || 10,
           };
@@ -23,7 +24,7 @@ export class ProductsDAO{
             options.sort = { price: sort };
           }
     
-          let products = await productsModel.paginate(query, options);
+          let products = await productsModel.paginate(query, options)
           return products;
         } catch (error) {
           console.log(error.message);
@@ -35,9 +36,12 @@ export class ProductsDAO{
        async getProductById(id) {
         console.log('entro')
         let getProduct;
+        console.log('IDDDD')
+        console.log(id)
         try {
           getProduct = await productsModel.findOne({ status: true, _id: id });
-          console.log("producto encontrado por id" + getProduct);
+          console.log('PRODUCT');
+          console.log(getProduct);
           return getProduct;
         } catch (error) {
           console.log("No se encontro Producto con Id:" + id);

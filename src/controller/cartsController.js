@@ -4,12 +4,12 @@ import { io } from "../app.js";
 import { productsService } from "../services/products.Service.js";
 import { ticketService } from "../services/ticket.Service.js";
 import { v4 } from "uuid";
+import { CustomError } from "../utils/customError.js";
+import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
 
 function idValid(id, res) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    let error = "Ingrese un Id Valido";
-    console.log("error al validar");
-    return res.status(400).json({ error: error });
+    return CustomError.CustomError('Error al validar ID', 'ID Invalido', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS);
   }
 }
 
@@ -33,7 +33,7 @@ export class CartsController {
       };
     } catch (error) {
       console.error("Error al renderizar la vista:", error);
-      res.status(500).json(error.message);
+      return CustomError.CustomError('Error al renderizar', 'Error al renderizar', STATUS_CODES.NOT_FOUND,ERRORES_INTERNOS.OTROS)
     }
   }
 
@@ -48,7 +48,7 @@ export class CartsController {
       let getCart = await cartsService.getCartById(id);
       if (!getCart) {
         console.log("Error en la búsqueda por ID");
-        return null;
+        return null
       }
 /*      let total = 0
     getCart.products.forEach(product => {
@@ -60,7 +60,7 @@ export class CartsController {
      return getCart
     } catch (error) {
       return res.status(500).json({
-        error: error.message,
+        Error: CustomError.CustomError('NO SE ENCONTRO CARRITO', 'NO SE ENCONTRO CARRITO', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS)
       });
     }
   }
@@ -125,7 +125,7 @@ export class CartsController {
       io.emit("listCarts", await cartsService.getCarts());
       return res.status(200).json("Carrito Creado" + createCart.title);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return CustomError.CustomError('Internal error', 'error interno', STATUS_CODES.ERROR_SERVER,ERRORES_INTERNOS.INTERNAL)
     }
   }
 

@@ -29,7 +29,7 @@ router.post('/login', passportCall('login'), (req, res) => {
 
 
 router.get('/github',passportCall('github', {}), (req,res)=>{})
-router.get('/callbackGithub',passportCall('github'),
+router.get('/githubcallback',passportCall('github'),
   (req,res)=>{
     let user = req.user
     let token = genToken(user)

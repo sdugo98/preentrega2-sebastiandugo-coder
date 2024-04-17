@@ -5,7 +5,7 @@ import multer from "multer";
 import mongoose from "mongoose";
 import { io } from "../app.js";
 import { managerProducts } from "./products-router.js";
-import { auth } from "./viewsRouter.js";
+
 import { passportCall, securityAcces } from "../utils.js";
 import { CartsController } from "../controller/cartsController.js";
 export const router = Router();

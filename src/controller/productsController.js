@@ -1,12 +1,12 @@
 import { productsService } from "../services/products.Service.js";
 import { io } from "../app.js";
 import mongoose from "mongoose";
+import { CustomError } from "../utils/customError.js";
+import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
 
 function idValid(id, res) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    let error = "Ingrese un Id Valido";
-    console.log("error al validar");
-    return res.redirect(`/errorHandlebars/?error=${error}`);
+    return CustomError.CustomError('Error al validar ID', 'ID Invalido', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS);
   }
 }
 
@@ -85,9 +85,9 @@ export class ProductsController {
       }
       return {user, getProductById}
     } catch (error) {
-      return res.status(500).json({
-        error: error.message,
-      });
+ 
+        return CustomError.CustomError('Error al validar ID', 'ID Invalido', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS);
+
     }
   }
 

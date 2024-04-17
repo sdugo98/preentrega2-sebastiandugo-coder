@@ -12,7 +12,7 @@ import mongoose from "mongoose";
 import {
   io
 } from "../app.js";
-import { auth } from "./viewsRouter.js";
+
 import { passportCall, securityAcces } from "../utils.js";
 import { ProductsController } from "../controller/productsController.js";
 export const router = Router();

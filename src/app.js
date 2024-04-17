@@ -17,6 +17,7 @@ import passport from "passport";
 import cookieParser from 'cookie-parser'
 import { config } from "./config/config.js";
 import { ChatController } from "./controller/chatController.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 const PORT = config.PORT;
 
@@ -77,6 +78,8 @@ app.use("/api/carts", cartManagerRouter);
 /* app.use("/api/sessions", sessionsRouter.getRouter()) */
 app.use('/api/sessions', sessionsManagerRouter)
 app.use("/", viewsRouter);
+
+app.use(errorHandler)
 
 const serverHTTP = app.listen(PORT, () => {
   console.log(`Server escuchando en puerto ${PORT}`);

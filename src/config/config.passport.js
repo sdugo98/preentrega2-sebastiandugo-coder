@@ -5,6 +5,8 @@ import { TOKENKEY, genToken, hashearPass, validPassword } from "../utils.js";
 import github from 'passport-github2'
 import passportJWT from 'passport-jwt'
 import {cartsService } from "../services/carts.Service.js";
+import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
+import { CustomError } from "../utils/customError.js";
 
 const searchToken=(req)=>{
   let token = null
@@ -26,19 +28,19 @@ export const initPassport = () => {
 
         let {first_name, last_name, rol, email, age}=req.body
         if(!first_name ||!last_name|| !email||!age||!password){
-          return done(null, false,{message: "Complete Datos"})
+          return done(null, false,CustomError.CustomError('COMPLETE TODOS LOS CAMPOS', 'COMPLETE LOS DATOS', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS))
         } 
 
         let regMail=/^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
           console.log(regMail.test(email))
           if(!regMail.test(email)){
-              return done(null, false, {message: 'Ingrese un mail Valido'})
+              return done(null, false, CustomError.CustomError('EMAIL INVALIDO, CONTROLAR', 'EMAIL INVALIDO', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS))
           }
 
         let existUser = await userModel.findOne({email}).lean()
 
         if(existUser){
-          return done(null, false,{message: `Ya existen usuarios registrados con el mail ${email}`})
+          return done(null, false,CustomError.CustomError('YA EXISTEN USUARIOS EN BD CON ESE EMAIL', 'YA EXISTEN USUARIOS EN BD CON ESE EMAIL', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS))
         }
         let user;
         if (
@@ -88,17 +90,17 @@ export const initPassport = () => {
         let regMail=/^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
           console.log(regMail.test(username))
           if(!regMail.test(username)){
-              return done(null, false, {message: 'Ingrese un mail Valido'})
+            return done(null, false, CustomError.CustomError('EMAIL INVALIDO', 'EMAIL INVALIDO', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS))
           }
 
         let user = await userModel.findOne({email:username}).lean()
         if(!user){
-          return done(null, false, {message: 'Datos Invalidos'})
+          return done(null, false, CustomError.CustomError('DATOS INVALIDOS', 'DATOS INVALIDOS', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS))
         }
         
         if(!validPassword(user, password)){
 
-          return done(null,false, {message:'Datos Invalidos'})
+          return done(null, false, CustomError.CustomError('DATOS INVALIDOS', 'DATOS INVALIDOS', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS))
         }
 
         delete user.password
@@ -127,7 +129,7 @@ export const initPassport = () => {
 passport.use('github', new github.Strategy(
     {         clientID: 'Iv1.16047d0725764474',
         clientSecret:'28a8728f57d2a5a36c338236fcc408c50ce1612b',
-        callbackURL:'http://localhost:7000/api/sessions/githubcallback'  
+        callbackURL:'http://localhost:8080/api/sessions/githubcallback'  
 /*         clientID: '',
         clientSecret:'',
         callbackURL:''   */

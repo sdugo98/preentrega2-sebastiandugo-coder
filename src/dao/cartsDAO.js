@@ -1,4 +1,6 @@
 import { cartsModel } from "../dao/models/cartsModel.js";
+import { CustomError } from "../utils/customError.js";
+import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
 
 export class CartsDAO{
     constructor(){}
@@ -15,12 +17,12 @@ export class CartsDAO{
       async getCartById(cartId) {
         let getCart;
         try {
-          getCart = await cartsModel.findOne({ status: true, _id: cartId })/* .populate('products.product'); */
+          getCart = await cartsModel.findOne({ status: true, _id: cartId }).populate('products.product');
           console.log("Carrito encontrado por id" + getCart);
           return getCart;
         } catch (error) {
           console.log("No se encontro carrito con Id:" + cartId);
-          return null;
+          return CustomError.CustomError('NO SE ENCONTRO CARRITO', 'NO SE ENCONTRO CARRITO', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS)
         }
       }
 
@@ -52,12 +54,11 @@ export class CartsDAO{
               quantity: 1,
             });
           }
-      
           try {
             let cartMod = await cartsModel.updateOne(
               { _id: cid },
               { products: getCart.products }
-            );
+              );
             console.log(cartMod);
             if (cartMod.modifiedCount > 0) {
               console.log("Modificado");
@@ -244,5 +245,4 @@ export class CartsDAO{
         return null;
       }
     }
-
     }
