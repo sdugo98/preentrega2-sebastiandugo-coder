@@ -7,7 +7,7 @@ import { router as cartManagerRouter } from "./router/carts-router.js";
 import { router as chatManagerRouter } from "./router/chat-router.js";
 import { router as sessionsManagerRouter } from "./router/sessions-router.js";
 /* import { SessionsRouter } from "./router/sessions-router.js"; */
-import { __dirname } from "./utils.js";
+import { __dirname} from "./utils.js";
 /* import { chatManager } from "./dao/managerMongo/chatManager.js";
 import sessions from 'express-session'
 import mongoStore from 'connect-mongo' */
@@ -18,15 +18,17 @@ import cookieParser from 'cookie-parser'
 import { config } from "./config/config.js";
 import { ChatController } from "./controller/chatController.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import { middleLogg } from "./utils/winstonLogger.js";
+
 
 const PORT = config.PORT;
 
 const app = express();
 /* export const sessionsRouter = new SessionsRouter() */
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`));
+app.use(middleLogg)
 /* Configuracion sessions y connect mongo */
 
 /* BORRAMOS TODA CONFIGURACION DE SESSIONS-------------------------------- */
@@ -64,15 +66,15 @@ app.engine(
       allowProtoMethodsByDefault: true,
     },
   })
-);
-
-
-/* app.engine("handlebars", engine()); */
-app.set("view engine", "handlebars");
-app.set("views", `${__dirname}/views`);
-
-/* REDIRECCIONES */
-app.use("/api/chat", chatManagerRouter);
+  );
+  
+  
+  /* app.engine("handlebars", engine()); */
+  app.set("view engine", "handlebars");
+  app.set("views", `${__dirname}/views`);
+  
+  /* REDIRECCIONES */
+  app.use("/api/chat", chatManagerRouter);
 app.use("/api/products", productManagerRouter);
 app.use("/api/carts", cartManagerRouter);
 /* app.use("/api/sessions", sessionsRouter.getRouter()) */

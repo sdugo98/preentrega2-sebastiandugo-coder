@@ -50,6 +50,7 @@ router.get('/current',passportCall('jwt'),securityAcces(["public"]),async(req,re
 router.get('/products', passportCall('jwt'), securityAcces(["public"]), async (req, res) => {
   try {
     const renderData = await ProductsController.renderData(req);
+    req.logger.info('RENDER')
     if(!renderData){
         let error  =  CustomError.CustomError('ERROR AL RENDERIZAR PRODUCTOS', 'ERROR INTERNO', STATUS_CODES.ERROR_SERVER, ERRORES_INTERNOS.DATABASE)
          return res.render('errorHandlebars', {error})
@@ -64,12 +65,13 @@ router.get('/products/:id', passportCall('jwt'), securityAcces(["public"]),async
   try {
     const renderProductById = await ProductsController.getProductById(req)
     if(!renderProductById){
+      req.logger.error('NO SE ENCONTRO PRODUCTO POR ID')
       let error  =  CustomError.CustomError('ERROR EN DATOS', 'NO SE ENCONTRO PRODUCTO', STATUS_CODES.ERROR_ARGUMENTOS, ERRORES_INTERNOS.ARGUMENTOS)
-       return res.render('errorHandlebars', {error})
-      } 
+      return res.render('errorHandlebars', {error})
+    } 
     res.status(200).render("viewDetailProduct", renderProductById);
   } catch (error) {
-    
+    return res.status(500).json({error: error.message})
   }
 })
 
@@ -77,6 +79,7 @@ router.get('/carts', passportCall('jwt'), securityAcces(["public"]),async (req,r
   try {
     const renderCart = await CartsController.render(req)
     if(!renderCart){
+      req.logger.fatal('ERROR AL RENDERIZAR CARRITOS')
       let error  =  CustomError.CustomError('ERROR AL RENDERIZAR CARRITOS', 'ERROR INTERNO', STATUS_CODES.ERROR_SERVER, ERRORES_INTERNOS.DATABASE)
        return res.render('errorHandlebars', {error})
   }
@@ -89,6 +92,7 @@ router.get('/carts/:id', passportCall('jwt'), securityAcces(["public"]), async (
   try {
     const cart = await CartsController.getCartById(req);
     if(!cart){
+      req.logger.error('NO SE ENCONTRO CARRITO POR ID')
     let error  =  CustomError.CustomError('ERROR EN DATOS', 'NO SE ENCONTRO CARRITO', STATUS_CODES.ERROR_ARGUMENTOS, ERRORES_INTERNOS.ARGUMENTOS)
      return res.render('errorHandlebars', {error})
     } 
@@ -140,6 +144,16 @@ router.get('/mockingproducts', passportCall('jwt'),securityAcces(["admin"]), asy
 router.get('/errorServer', securityAcces(["public"]),(req,res)=>{
   res.render('errorServer')
 })
+
+router.get('/loggerTest', securityAcces(["public"]), (req, res) => {
+  req.logger.debug('Debug message');
+  req.logger.http('HTTP message');
+  req.logger.info('Info message');
+  req.logger.warning('Warning message');
+  req.logger.error('Error message');
+  req.logger.fatal('Fatal message');
+  return res.status(200).json({ message: 'TESTEANDO LOGS EN CONSOLA' });
+});
 
 /* TOMA ENDPOINT ENPOINT ERRONEO */
 router.get('*', securityAcces(["public"]),(req,res)=>{

@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 const __filename = fileURLToPath(import.meta.url)
 export const __dirname = dirname(__filename)
 
+
 import bcrypt from 'bcrypt'
 import { ERRORES_INTERNOS, STATUS_CODES } from './utils/tiposError.js'
 import { CustomError } from './utils/customError.js'
