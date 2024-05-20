@@ -96,8 +96,11 @@ export class ProductsController {
       let { title, description, code, price, stock, category, thumbnail } =
         req.body;
 
-      console.log(title);
-
+        let owner = "Admin"
+        if(req.user.rol === "premiun"){
+          owner = req.user.email
+        }
+        
       if (!title || !description || !code || !price || !stock || !category) {
         return res.status(400).json({
           error: "Faltan campos obligatorios para agregar el producto.",
@@ -125,7 +128,8 @@ export class ProductsController {
         price,
         stock,
         category,
-        thumbnail
+        thumbnail,
+        owner
       );
       if (!confirmCreateProduct) {
         return res.status(404).json({
@@ -166,7 +170,12 @@ export class ProductsController {
           error: "no se puede modificar la propiedad _id"
         });
       }
-  
+
+      if(req.user.rol !== "Admin"){
+        if(req.user.email !== getProductById.owner){
+          return res.status(404).json({error: 'SOLO PUEDES MODIFICAR LOS PRODUCTOS CREADOS POR TI'})
+        } 
+      }
       let putProduct = await productsService.updateProduct(id, req.body);
       if (!putProduct) {
         res.status(404).json({
@@ -200,7 +209,11 @@ static async deleteProduct(req,res){
       console.log("Error en busqueda por ID");
       return null;
     }
-
+    if(req.user.rol !== "Admin"){
+      if(req.user.email !== getProductById.owner){
+        return res.status(404).json({error: 'SOLO PUEDES ELIMINAR LOS PRODUCTOS CREADOS POR TI'})
+      } 
+    }
     let prodDeleted = await productsService.deleteProduct(id)
 
     if (!prodDeleted) {

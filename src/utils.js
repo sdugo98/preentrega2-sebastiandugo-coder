@@ -32,6 +32,7 @@ export const TOKENKEY = 'keydugo98'
 export const genToken = (user) =>jwt.sign({...user}, TOKENKEY,{expiresIn: '1h'})
 
 
+
 export const securityAcces= (permissions = [])=>{
   return (req,res,next)=>{
     permissions=permissions.map(p=>p.toUpperCase())

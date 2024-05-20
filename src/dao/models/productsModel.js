@@ -12,7 +12,8 @@ const productsSchema  = new mongoose.Schema(
        },
        stock: {type: Number, required: true},
        category: {type: String, required: true},
-       thumbnail: String
+       thumbnail: String,
+       owner: {type: String, required: true}
     },{collection:'products'}
 )
 

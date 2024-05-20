@@ -17,7 +17,8 @@ export class ProductsService {
      price,
      stock,
      category,
-     thumbnail
+     thumbnail,
+     owner
      ){
         return await this.dao.createProduct(      title,
            description,
@@ -25,7 +26,8 @@ export class ProductsService {
            price,
            stock,
            category,
-           thumbnail)
+           thumbnail,
+           owner)
      }
 
      async updateProduct(id, body){

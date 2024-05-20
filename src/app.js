@@ -6,11 +6,8 @@ import { router as productManagerRouter } from "./router/products-router.js";
 import { router as cartManagerRouter } from "./router/carts-router.js";
 import { router as chatManagerRouter } from "./router/chat-router.js";
 import { router as sessionsManagerRouter } from "./router/sessions-router.js";
-/* import { SessionsRouter } from "./router/sessions-router.js"; */
+import { router as userManagerRouter } from "./router/user-router.js";
 import { __dirname} from "./utils.js";
-/* import { chatManager } from "./dao/managerMongo/chatManager.js";
-import sessions from 'express-session'
-import mongoStore from 'connect-mongo' */
 import mongoose from "mongoose";
 import { initPassport } from "./config/config.passport.js";
 import passport from "passport";
@@ -19,40 +16,43 @@ import { config } from "./config/config.js";
 import { ChatController } from "./controller/chatController.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { middleLogg } from "./utils/winstonLogger.js";
+import swaggerJsdoc from 'swagger-jsdoc'
+import swaggerUI from 'swagger-ui-express'
 
 
 const PORT = config.PORT;
 
 const app = express();
-/* export const sessionsRouter = new SessionsRouter() */
+
+/* CONFIGURACION SWAGGER */
+const options = {
+  definition:{
+    openapi: "3.0.0",
+    info:{
+      title: "Documentacion API (Lovera)",
+      version: "1.0.0",
+      description: "Documentacion de API utilizada en este eccomerce-. Cuenta con Apartado de productos, carritos, chat en tiempo real, Sistema de registro y jerarquia de usuarios-."
+    }
+  },
+  apis:[`${__dirname}/docs/*.yaml`]
+}
+/* CONFIGURACION SWAGGER */
+
+const specs = swaggerJsdoc(options)
+app.use(`/api-docs`, swaggerUI.serve,swaggerUI.setup(specs))
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`));
 app.use(middleLogg)
-/* Configuracion sessions y connect mongo */
-
-/* BORRAMOS TODA CONFIGURACION DE SESSIONS-------------------------------- */
-/* app.use(sessions({
-  secret: 'udmv',
-  resave: true, saveUninitialized: true,
-  store: mongoStore.create({
-    mongoUrl:'mongodb+srv://sebastiandugo98:sebas1998@cluster0.xbb2pbe.mongodb.net/?retryWrites=true&w=majority',
-    mongoOptions:{dbName:'test'},
-    ttl:3600
-  })
-}))  */
-
 
 
 /* COOKIE PARSER---------------------------------------------- */
 app.use(cookieParser())
-/* CONFIGURACIONES PASSPORT */
 
+/* CONFIGURACIONES PASSPORT */
 initPassport()
 app.use(passport.initialize())
-
-/* BORRAMOS TODA CONFIGURACION DE SESSIONS-------------------------------- */
-/* app.use(passport.session()) */
 
 
 /* CONFIGURAMOS HANDLEBARS */
@@ -69,7 +69,6 @@ app.engine(
   );
   
   
-  /* app.engine("handlebars", engine()); */
   app.set("view engine", "handlebars");
   app.set("views", `${__dirname}/views`);
   
@@ -77,8 +76,8 @@ app.engine(
   app.use("/api/chat", chatManagerRouter);
 app.use("/api/products", productManagerRouter);
 app.use("/api/carts", cartManagerRouter);
-/* app.use("/api/sessions", sessionsRouter.getRouter()) */
 app.use('/api/sessions', sessionsManagerRouter)
+app.use('/api/users/premiun', userManagerRouter)
 app.use("/", viewsRouter);
 
 app.use(errorHandler)

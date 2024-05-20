@@ -70,45 +70,74 @@ export class CartsController {
       let { cid } = req.params;
       let valid = idValid(cid, res);
       if (valid) {
-        console.log("cid invalido");
-        return null;
+        return res.status(400).json({
+          error: CustomError.CustomError(
+            'Error al validar el ID',
+            'ID Invalido',
+            STATUS_CODES.BAD_REQUEST,
+            ERRORES_INTERNOS.OTROS
+          )
+        });
       }
       let { pid } = req.params;
       let validpid = idValid(pid, res);
       if (validpid) {
-        console.log("pid invalido");
-        return null;
+        return res.status(400).json({
+          error: CustomError.CustomError(
+            'Error al validar el ID del producto',
+            'ID de producto Invalido',
+            STATUS_CODES.BAD_REQUEST,
+            ERRORES_INTERNOS.OTROS
+          )
+        });
       }
       const product = await productsService.getProductById(pid);
       if (!product) {
-        console.log("error en recuperacion de producto");
-        return null;
+        return res.status(404).json({
+          error: CustomError.CustomError(
+            'Error al recuperar el producto',
+            'Producto no encontrado',
+            STATUS_CODES.NOT_FOUND,
+            ERRORES_INTERNOS.OTROS
+          )
+        });
       }
-
+  
       if(product.stock <= 0){
-        console.log('No contamos con stock ')
-        return null
+        return res.status(400).json({
+          error: CustomError.CustomError(
+            'Error al agregar producto al carrito',
+            'No hay stock disponible',
+            STATUS_CODES.BAD_REQUEST,
+            ERRORES_INTERNOS.OTROS
+          )
+        });
       }
-
-      
-      
+  
+      if(req.user.rol == "premiun"){
+        if(req.user.email == product.owner){
+          return res.status(400).json({
+            error: 'No puedes agregar productos creados por ti'});
+        } 
+      }
       let cartMod = await cartsService.addProductInCart(cid, product);
       if (!cartMod) {
-        console.log("fallo el agregado de producto");
-        return null;
+        return res.status(500).json({
+          error: CustomError.CustomError(
+            'Error al agregar producto al carrito',
+            'Error interno al modificar el carrito',
+            STATUS_CODES.INTERNAL_SERVER_ERROR,
+            ERRORES_INTERNOS.OTROS
+          )
+        });
       }
-/* 
-/*       let body = {stock: product.stock -1} 
-
-      let saveModProduct = productsService.updateProduct(pid/* , body )
-      console.log('stock actualizado')
-       */
       console.log("carro modificado: " + cartMod);
       return res.status(200).json({ cartMod });
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
   }
+  
 
   static async createCart(req, res) {
     try {

@@ -57,7 +57,8 @@ export class ProductsDAO{
         price,
         stock,
         category,
-        thumbnail
+        thumbnail,
+        owner
       ) {
         try {
           let newProduct = await productsModel.create({
@@ -68,6 +69,7 @@ export class ProductsDAO{
             stock: Number(stock),
             category: category,
             thumbnail: thumbnail,
+            owner: owner
           });
           return newProduct;
         } catch (error) {

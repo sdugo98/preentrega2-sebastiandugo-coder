@@ -33,10 +33,8 @@ function idValid(id, res) {
 
 /* router.get("/:id", passportCall('jwt'),ProductsController.getProductById); */
 
-router.post("/", passportCall('jwt'),upload.none(), securityAcces(["admin"]),ProductsController.createProduct);
+router.post("/", passportCall('jwt'),upload.none(), securityAcces(["admin", "premiun"]),ProductsController.createProduct);
 
 router.put("/:id", passportCall('jwt') , securityAcces(["public"]),ProductsController.updateProduct);
 
-router.delete("/:id", passportCall('jwt'),securityAcces(["public"]),ProductsController.deleteProduct);
-
-/* FALTA DELETEPRODUCTSALL */
+router.delete("/:id", passportCall('jwt'),securityAcces(["admin", "premiun"]),ProductsController.deleteProduct);

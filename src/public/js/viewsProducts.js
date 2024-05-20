@@ -41,7 +41,7 @@ formAdd.addEventListener("submit", async (e) => {
 
     let errorDiv = document.createElement('div');
     errorDiv.classList.add('alert', 'alert-danger');
-    errorDiv.innerHTML = `${error}`;
+    errorDiv.innerHTML = 'NO TIENES PRIVILEGIOS';
 
     resFetch.innerHTML = '';
     resFetch.appendChild(errorDiv);
@@ -132,6 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   [...btnsAddToCart].forEach((btn) => {
     btn.addEventListener("click", async (e) => {
+      e.preventDefault()
       let productId = e.target.dataset.productId;
       const elementCart = document.querySelector('#cartUser');
       const cid = elementCart.getAttribute('cart');
@@ -160,7 +161,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }).showToast();
           }
         } catch (error) {
-          console.error("error: " + error);
+          let errorDiv = document.createElement('div');
+          errorDiv.classList.add('alert', 'alert-danger');
+          errorDiv.innerHTML = `Error: ${error}`;
+          errorAdmin.innerHTML = '';
+          errorAdmin.appendChild(errorDiv);        
         }
       } else {
         let errorDiv = document.createElement('div');
