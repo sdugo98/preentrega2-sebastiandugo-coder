@@ -12,7 +12,6 @@ export class CartsService {
     }
 
     async addProductInCart(cid, product){
-        console.log('en service')
         return await this.dao.addProductInCart(cid, product)
     }
 

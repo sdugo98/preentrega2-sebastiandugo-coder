@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { userModel } from "../dao/models/usersModel.js";
 import passport from "passport";
-import { genToken, hashearPass, passportCall, validPassword } from "../utils.js";
+import { genToken, hashearPass, passportCall, securityAcces, validPassword } from "../utils.js";
 import { UserController } from "../controller/userController.js";
 import jwt from 'jsonwebtoken'
 import { TOKENKEY } from "../utils.js";
 import { sendMail } from "../mails/mails.js";
-/* import { MyRouter } from "./router.js"; */
+import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
+import { CustomError } from "../utils/customError.js";
+
 export const router = Router();
 
 router.post('/registro',passportCall('register'),async(req,res)=>{
@@ -19,11 +21,15 @@ try {
   return redirect('/errorServer')
 }})
 
-router.post('/login', passportCall('login'), (req, res) => {
+router.post('/login', passportCall('login'), async (req, res) => {
   if (req.error) {
-      return res.redirect(`/login/?error=${req.error}`);
+      return res.status(400).redirect(`/login/?error=${req.error}`);
   }
-
+  let id = req.user._id
+  let last_connection = await UserController.last_connection(req,res,id)
+  let error  =  CustomError.CustomError('ERROR SERVER', 'ERROR INTERNO', STATUS_CODES.ERROR_SERVER, ERRORES_INTERNOS.DATABASE)
+  if(!last_connection){ return res.status(404).render('errorHandlebars', { error })
+}
   let token = genToken(req.user);
   res.cookie('CookieUser', token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
   res.redirect('/current');
@@ -42,7 +48,21 @@ router.get('/callbackGithub',passportCall('github'),
   })
 
 
-  router.get('/logout',async(req,res)=>{
+  router.get('/logout',passportCall('jwt'),async(req,res)=>{
+    let id = req.user._id
+    if(!req.user._id || req.user._id === undefined){
+      let user = await UserController.getUser(req,res,req.user.email)
+      if(!user){
+        let error  =  CustomError.CustomError('ERROR', 'ERROR AL RECUPERAR USUARIO', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.ARGUMENTOS)
+        return res.status(404).render('errorHandlebars', { error })
+      }
+      id = user._id
+    }
+    let last_connection = await UserController.last_connection(req,res,id)
+    let error  =  CustomError.CustomError('ERROR SERVER', 'ERROR INTERNO', STATUS_CODES.ERROR_SERVER, ERRORES_INTERNOS.DATABASE)
+    if(!last_connection){
+      return res.status(404).render('errorHandlebars', { error })
+  }
     res.clearCookie('CookieUser')
     res.redirect('/login')
   })
@@ -50,16 +70,34 @@ router.get('/callbackGithub',passportCall('github'),
   router.post('/restPass1',async(req,res)=>{
     let {email} = req.body
     if(!email){
-      return res.status(404).json({error: 'NO INGRESO UN MAIL'})
+      let error = CustomError.CustomError(
+        "DATOS INCOMPLETOS",
+        "INGRESE UN MAIL",
+        STATUS_CODES.ERROR_DATOS_ENVIADOS,
+        ERRORES_INTERNOS.ARGUMENTOS
+      );
+      return res.render("rstPass", { error });
     }
     let user = await UserController.getUser(req, res,email)
     if(!user){
-      return res.status(404).json({error: 'ERROR AL RECUPERAR USUARIO1'})
+      let error = CustomError.CustomError(
+        "ERROR EN DATOS",
+        "NO SE ENCONTRO UN USUARIO REGISTRADO CON ESE EMAIL",
+        STATUS_CODES.ERROR_DATOS_ENVIADOS,
+        ERRORES_INTERNOS.ARGUMENTOS
+      );
+      return res.render("rstPass", { error });
     }
     delete user.password
     let token = genToken(user)
     if(!token){
-      return res.status(500).json({error: 'Error al generar jwt'})
+      let error = CustomError.CustomError(
+        "SERVER ERROR",
+        "NO SE PUDO GENERAR JWT, CONTACTE ADMINISTRADOR",
+        STATUS_CODES.ERROR_SERVER,
+        ERRORES_INTERNOS.INTERNAL
+      );
+      return res.render("rstPass", { error });
     }
 
     let message= `Usted a solicitado reestablecer su contraseña.<br><br><hr>
@@ -86,9 +124,15 @@ router.get('/callbackGithub',passportCall('github'),
           contentToken = jwt.verify(token, TOKENKEY);
       } catch (error) {
           if (error.name === 'TokenExpiredError') {
-              return res.redirect('http://localhost:8080/restablecerPass?error=ENLACE EXPIRADO');
+            let error = CustomError.CustomError(
+              "ERROR",
+              "EXPIRO TOKEN",
+              STATUS_CODES.ERROR_DATOS_ENVIADOS,
+              ERRORES_INTERNOS.ARGUMENTOS
+            );
+            return res.render("rstPass", { error });
           } else {
-              return res.status(500).json({ error });
+              return res.status(500).render('errorServer');
           }
       }
       res.redirect(`http://localhost:8080/restPass2?token=${token}`)
@@ -107,16 +151,27 @@ let contentToken;
         contentToken = jwt.verify(token, TOKENKEY);
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
-            return res.redirect('http://localhost:8080/restablecerPass?error=ENLACE EXPIRADO');
+          let error = CustomError.CustomError(
+            "ERROR",
+            "EXPIRO TOKEN",
+            STATUS_CODES.ERROR_DATOS_ENVIADOS,
+            ERRORES_INTERNOS.ARGUMENTOS
+          );
+          return res.render("rstPass", { error });
         } else {
-            return res.status(500).json({ error });
+            return res.status(500).render('errorServer');
         }
     }
 
-   console.log(pass)
     let updatePassUser = await UserController.updatePassUser(res, pass, contentToken.email)
 if(!updatePassUser){
-  return res.status(500).json({error: 'FALLO EN EL PROCESO DE REESTABLECIMIENTO, INTENTE MAS TARDE'})
+  let error = CustomError.CustomError(
+    "SERVER ERROR",
+    "ERROR INTERNO, CONTACTE ADMINISTRADOR",
+    STATUS_CODES.ERROR_SERVER,
+    ERRORES_INTERNOS.INTERNAL
+  );
+  return res.render("errorHandlebars", { error });
 }
 
 return updatePassUser

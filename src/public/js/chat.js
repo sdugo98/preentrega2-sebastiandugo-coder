@@ -10,15 +10,12 @@ Swal.fire({
 }).then((res) => {
   try {
     if (!res.value) {
-      console.log("No se ingresó ningún correo electrónico.");
       return null;
     }
 
-    /* enviamos correo */
     Swal.fire(`Entered email: ${res.value}`);
     socket.emit("correoDelUsuario", res.value);
 
-    /* recibimos brodcast de nuevo usuario */
     socket.on("conectUser", (newUser) => {
       Toastify({
         text: `Se conecto un nuevo usuario: ${newUser}`,
@@ -44,7 +41,6 @@ Swal.fire({
       newMessage.innerHTML = `<strong>${datos.user}:</strong>
       <p>${datos.message}</p><br>`;
       containerMessages.append(newMessage);
-      /* mantener abajo el scrool */
       containerMessages.scrollTop = containerMessages.scrollHeight;
     });
   } catch (error) {

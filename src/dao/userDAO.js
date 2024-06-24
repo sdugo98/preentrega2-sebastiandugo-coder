@@ -4,18 +4,16 @@ import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
 import { userModel } from "./models/usersModel.js";
 
 export class UserDAO {
-  constructor() {}
+  constructor() { }
 
   async getUserById(userId) {
-    console.log("entro a Dao");
+
     let getUser;
     try {
       getUser = await userModel.findOne({ _id: userId });
-      console.log("Carrito encontrado por id" + getUser);
-      console.log("DAO", getUser);
+
       return getUser;
     } catch (error) {
-      console.log("No se encontro usuario con Id:" + userId);
       return CustomError.CustomError(
         "NO SE ENCONTRO USUARIO",
         "NO SE ENCONTRO USUARIO",
@@ -30,10 +28,10 @@ export class UserDAO {
     try {
       let userMod = await userModel.updateOne({ _id: id }, { rol: rol });
       if (userMod.modifiedCount > 0) {
-        console.log("Modificado");
+
         return userMod;
       } else {
-        console.log("Ningún campo fue modificado");
+
         return null;
       }
     } catch (error) {
@@ -48,9 +46,9 @@ export class UserDAO {
 
   async getUser(email) {
     try {
-      console.log("llego a dao");
       let user = await userModel.findOne({ email }).lean()
       if (!user) {
+
         return null;
       }
       return user;
@@ -61,16 +59,16 @@ export class UserDAO {
 
   async updatePassUser(pass, email) {
     try {
-      console.log('ENTRO UPDATE')
+
       let user = await this.getUser(email);
       if (!user) {
         return null
       }
       let hashPass = hashearPass(pass);
       if (!hashPass) {
-       return null
+        return null
       }
-    
+
       let updatedUser = await userModel.updateOne(
         { email: email },
         { password: hashPass }
@@ -84,4 +82,33 @@ export class UserDAO {
       return null
     }
   }
+
+  async putUser(id) {
+    let user = await this.getUserById(id)
+    if (!user) {
+      return null
+    }
+    let date = new Date()
+    let userMod = await userModel.updateOne({ _id: id }, { last_connection: date })
+    if (!userMod) {
+      return null
+    }
+    return true
+  }
+
+
+
+  async pushDoc(userId, nameFile, pathFile) {
+    let user = await this.getUserById(userId)
+    if (!user) {
+      return null
+    }
+    let newDoc = {
+      name: nameFile,
+      reference: pathFile
+    }
+    let userPush = await userModel.updateOne({ _id: userId }, { $push: { documents: newDoc } })
+    return userPush
+  }
+
 }

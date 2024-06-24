@@ -3,10 +3,11 @@
         <div class="col-md-8">
             <h1 class="display-4 text-center mt-4 ">ERROR</h1>
             <hr class="hr-divider">
-                {{#if error}}
-                <div class="alert alert-danger">
-                    {{error}}
-                </div>
-                {{/if}}
-                <hr>
-<h2 class="display-4 text-center mt-4">REVISE LOS DATOS INGRESADOS</h2>
+            {{#if error}}
+            <div class="alert alert-danger">
+                <strong>{{error.message}}</strong>
+                <p>Status: {{error.code}}</p>
+            </div>
+            {{/if}}
+            <hr>
+            <h2 class="display-4 text-center mt-4">REVISE LOS DATOS INGRESADOS</h2>

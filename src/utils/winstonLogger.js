@@ -42,10 +42,8 @@ const transportFilePROD = new winston.transports.File({
 
 
 if (config.MODE === 'development') {
-  console.log('Development mode');
   logger.add(transportConsoleDEV);
 } else if (config.MODE === 'production') {
-  console.log('Production mode');
   logger.add(transportConsolePROD);
   logger.add(transportFilePROD);
 }

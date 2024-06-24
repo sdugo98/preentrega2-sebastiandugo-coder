@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+
   const btnAddToCart = document.getElementById("btnAddToCart");
   btnAddToCart.addEventListener("click", async (e) => {
             let productId = e.target.dataset.productId;
@@ -12,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             
                 const data = await response.json();
-                console.log("Server Response:", data);
             
                 resFetch.classList.remove('alert-danger', 'alert-success');
             
@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function () {
                   }).showToast();
                 }
               } catch (error) {
-                console.error("error: " + error);
               }
             } else {
               let errorDiv = document.createElement('div');

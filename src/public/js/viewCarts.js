@@ -1,39 +1,43 @@
 const socket = io();
 
 const cartsForm = document.getElementById("createCartForm");
-cartsForm.addEventListener("submit", (e) => {
+cartsForm.addEventListener("submit",async (e) => {
   e.preventDefault();
   let cartTitle = new FormData(cartsForm);
 
   try {
-    fetch(`http://localhost:8080/api/carts`, {
+    const response = await fetch(`http://localhost:8080/api/carts`, {
       method: "POST",
       body: cartTitle,
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Server Response:", data);
-
-      resFetch.classList.remove('alert-danger', 'alert-success');
-
-      if (data.error) {
-        let errorDiv = document.createElement('div');
-        errorDiv.classList.add('alert', 'alert-danger');
-        errorDiv.innerHTML = `${data.error}`;
-
-        resFetch.innerHTML = ''
-        resFetch.appendChild(errorDiv);
-        
-        }else{ 
-          resFetch.classList.add('alert', 'alert-success');
-          resFetch.innerHTML = `Producto Agregado`;
-      }
-    })
-      } catch (error) {
-    console.error("error: " + error);
+    });
+  
+    const data = await response.json();
+  
+    resFetch.classList.remove('alert-danger', 'alert-success');
+  
+    if (data.error) {
+      let errorDiv = document.createElement('div');
+      errorDiv.classList.add('alert', 'alert-danger');
+      errorDiv.innerHTML = `${data.error}`;
+  
+      resFetch.innerHTML = '';
+      resFetch.appendChild(errorDiv);
+    } else {
+      resFetch.classList.add('alert', 'alert-success');
+      resFetch.innerHTML = `CARRITO CREADO`;
+    }
+  } catch (error) {
+  
+    resFetch.classList.remove('alert-danger', 'alert-success');
+  
+    let errorDiv = document.createElement('div');
+    errorDiv.classList.add('alert', 'alert-danger');
+    errorDiv.innerHTML = 'NO TIENES PRIVILEGIOS';
+  
+    resFetch.innerHTML = '';
+    resFetch.appendChild(errorDiv);
   }
-})
-
+})  
 socket.on("listCarts", (carts) => {
   let containerCarts = document.getElementById("containerCarts");
   containerCarts.innerHTML = "";

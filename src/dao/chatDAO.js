@@ -12,7 +12,6 @@ export class ChatDAO{
                 return datos
             }
             await chatsModel.create({ user: datos.user, message: [datos.message] });
-            console.log(`se creo un nuevo usuario en BD: ${datos.user}`)
             return datos
         } catch (error) {
             return null

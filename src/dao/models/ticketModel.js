@@ -2,20 +2,20 @@ import mongoose from "mongoose";
 
 const ticketSchema = new mongoose.Schema(
     {
-        code:{},
+        code: {},
         amount: Number,
         purchaser: String
     },
     {
-        timestamps:{
+        timestamps: {
             updatedAt:
-            'DateUltimateMod',
-            createdAt:'DateOn'
-        } 
-        },
-        {
-            strict:false
+                'DateUltimateMod',
+            createdAt: 'DateOn'
         }
+    },
+    {
+        strict: false
+    }
 )
 
-export const ticketsModel= mongoose.model('tickets', ticketSchema)
+export const ticketsModel = mongoose.model('tickets', ticketSchema)

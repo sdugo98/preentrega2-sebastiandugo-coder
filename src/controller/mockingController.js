@@ -1,13 +1,13 @@
 import { fakerES_MX as faker } from '@faker-js/faker';
 
 export class Mocking {
-    constructor() {}
+    constructor() { }
 
     static async genProd() {
         let products = [];
 
         for (let i = 0; i < 100; i++) {
-            let _id = faker.string.uuid(); /* Updated method */
+            let _id = faker.string.uuid();
             let code = faker.string.alphanumeric(5);
             let title = faker.commerce.productName();
             let description = faker.commerce.product();

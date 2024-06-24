@@ -6,24 +6,24 @@
         </div>
 
         <form action="/api/sessions/restPass1" method="post">
-               {{#if error}}
-                <div class="alert alert-danger">
-                    {{error}}
-                </div>
-                {{/if}}
-                {{#if message}}
-                <div class="alert alert-success">
-                    {{message}}
-                </div>
-                {{/if}}
-                <div class="mb-3">
-                    <label for="email" class="form-label">Coloque su Email de Recuperacion:</label>
-                    <input type="text" class="form-control" id="email" name="email" placeholder="Ingrese email">
-                </div>
-                <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>
-            </form>
-        </div>
+            {{#if error}}
+            <div class="alert alert-danger">
+                {{error.message}}
+            </div>
+            {{/if}}
+            {{#if message}}
+            <div class="alert alert-success">
+                {{message}}
+            </div>
+            {{/if}}
+            <div class="mb-3">
+                <label for="email" class="form-label">Coloque su Email de Recuperacion:</label>
+                <input type="text" class="form-control" id="email" name="email" placeholder="Ingrese email">
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>
+        </form>
     </div>
 </div>
-    </div>
+</div>
+</div>
 </div>

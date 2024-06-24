@@ -12,12 +12,7 @@
           <form id="createCartForm">
             <div class="mb-3 form-group">
               <label for="cartTitle" class="form-label">TITULO</label>
-              <input
-                id="cartTitle"
-                name="title"
-                type="text"
-                class="form-control"
-              />
+              <input id="cartTitle" name="title" type="text" class="form-control" />
             </div>
             <button type="submit" class="btn btn-primary mt-2">CREAR</button>
           </form>
@@ -32,12 +27,12 @@
 
   <div id="containerCarts" class="mt-4">
     {{#each carts}}
-      <div class="card mb-3">
-        <div class="card-body">
-          <h4 class="card-title">{{this.title}}</h4>
-          <p class="card-text">ID: {{this.id}}</p>
-        </div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h4 class="card-title">{{this.title}}</h4>
+        <p class="card-text">ID: {{this.id}}</p>
       </div>
+    </div>
     {{/each}}
   </div>
 </div>

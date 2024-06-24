@@ -15,7 +15,6 @@ formAdd.addEventListener("submit", async (e) => {
     });
 
     const data = await response.json();
-    console.log("Server Response:", data);
 
     resFetch.classList.remove('alert-danger', 'alert-success');
 
@@ -27,7 +26,6 @@ formAdd.addEventListener("submit", async (e) => {
       resFetch.innerHTML = '';
       resFetch.appendChild(errorDiv);
     } else {
-      console.log("fetch enviado");
 
       resFetch.classList.add('alert', 'alert-success');
 
@@ -35,7 +33,6 @@ formAdd.addEventListener("submit", async (e) => {
       formAdd.reset();
     }
   } catch (error) {
-    console.error("Error in Fetch:", error);
 
     resFetch.classList.remove('alert-danger', 'alert-success');
 
@@ -80,7 +77,6 @@ deleteForm.addEventListener("submit", (e) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Server Response:", data);
 
         resFetch.classList.remove('alert-danger', 'alert-success');
 
@@ -92,14 +88,12 @@ deleteForm.addEventListener("submit", (e) => {
           resFetch.innerHTML = ''
           resFetch.appendChild(errorDiv);
         } else {
-          console.log("fetch enviado");
           resFetch.classList.add('alert', 'alert-success');
 
           resFetch.innerHTML = `<p>Producto Eliminado</p>`;
         }
       })
       .catch((error) => {
-        console.error("Error in Fetch:", error);
 
         resFetch.classList.remove('alert-danger', 'alert-success');
 
@@ -111,7 +105,6 @@ deleteForm.addEventListener("submit", (e) => {
         resFetch.appendChild(errorDiv);
       });
   } catch (error) {
-    console.error("Error in Fetch:", error);
 
     resFetch.classList.remove('alert-danger', 'alert-success');
 
@@ -125,8 +118,6 @@ deleteForm.addEventListener("submit", (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-/*   const elemento = document.querySelector('#cartUser');
-  const cart = elemento ? elemento.getAttribute('cart') : null; */
 
   const btnsAddToCart = document.querySelectorAll(".btnAddToCart");
 
@@ -143,7 +134,6 @@ document.addEventListener('DOMContentLoaded', function () {
           });
       
           const data = await response.json();
-          console.log("Server Response:", data);
       
           resFetch.classList.remove('alert-danger', 'alert-success');
       

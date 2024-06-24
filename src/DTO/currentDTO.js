@@ -1,5 +1,6 @@
-export const currentDTO =(user)=>{
+export const currentDTO = async (user) => {
+
     user.first_name = user.first_name.toLowerCase()
-    user.last_name = user.last_name.toUpperCase()
+
     return user
 }

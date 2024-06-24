@@ -51,16 +51,17 @@ const confirmBuy = async (cid) => {
     }
 
     let data = await response.json();
-
-    if (data.ticket) {
-      return window.location.href = `/purchase/${data.ticket._id}`;
+    if (data.total) {
+      let total = data.total
+      return window.location.href = `/pagos/${total}`;
  
     } else {
-      console.error("La respuesta no contiene un ticket válido");
+      console.error("La respuesta no contiene un total válido");
     }
   } catch (error) {
-    console.error("Error al confirmar la compra:", error);
+    console.error("Error interno:", error);
   }
+
 };
 
 </script>
